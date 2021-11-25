@@ -4,3 +4,10 @@
 *.ptx
 *.cubin
 *.fatbin
+
+*.exe
+*.exp
+*.lib
+*.o
+res/
+.vscode/
