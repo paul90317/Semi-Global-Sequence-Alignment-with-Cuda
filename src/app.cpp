@@ -13,7 +13,7 @@ int main(int argc,char* argv[]){
     FILE* fp;
     char *xtxt=argv[1],*ytxt=argv[2],*outtxt=argv[3],*tmptxt=argv[4],*afgexe=argv[5],*sliceexe=argv[6],*almexe=argv[7],*p;
     char buf[BUF_SIZE];
-    int sc1,sc2,l,r;
+    int sc1,l,r;
 
     sprintf(buf,"%s %s %s > %s",afgexe,xtxt,ytxt,tmptxt);
     printf("%s\n",buf);
@@ -26,6 +26,7 @@ int main(int argc,char* argv[]){
     sc1=strtol(p,&p,10);
     l=strtol(p,&p,10);
     r=strtol(p,&p,10);
+    printf("afg best score: %d\n",sc1);
 
     sprintf(buf,"%s %s %d %d %s",sliceexe,ytxt,l,r,tmptxt);
     printf("%s\n",buf);
