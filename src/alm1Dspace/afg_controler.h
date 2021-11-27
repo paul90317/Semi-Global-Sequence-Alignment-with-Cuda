@@ -17,27 +17,27 @@ __global__ void initM_uf(afg_unit* GM,afg_unit* GM1,afg_unit* GM2,int cnt){
     GM2[tid].x=NEG_INF;
     GM2[tid].y=NEG_INF;
 }
-__global__ void initM_mf(afg_unit* GM1,int l){
-    GM1[l-1].m=0;
+__global__ void initM_mf(afg_unit* GM1,int l,bool xgap){
+    if(xgap){
+        GM1[l-1].y=0;
+    }else{
+        GM1[l-1].m=0;
+    }
 }
 __global__ void front_uf(afg_unit* GM,afg_unit* GM1,afg_unit* GM2,char*mx,char*my,int xl,int xr,int yl,int yr,int ymover,int ymid) {
     int tid=threadIdx.x+blockDim.x*blockIdx.x;
     int xp=tid+xl-1;
     int yp=ymover-tid;
     if((yp<(yl-1))||(xp>xr)||(yp>yr))return;
-    if(yp==ymid){
-        GM[xp].mstart=xp;
-        GM[xp].xstart=GM1[xp-1].start_x();
-        GM[xp].ystart=xp;
-    }
-    if(yp>ymid){
-        GM[xp].xstart=GM1[xp-1].start_x();
-        GM[xp].ystart=GM1[xp].start_y();
-        GM[xp].mstart=GM2[xp-1].start_m();
-    }
     GM[xp].x=GM1[xp-1].gto_x();
     GM[xp].y=GM1[xp].gto_y();
     GM[xp].m=GM2[xp-1].gto_m(mx[xp]==my[yp]);
+    if(yp==ymid){
+        GM[xp].m.start=xp;
+        GM[xp].m.is_backgap=false;
+        GM[xp].y.start=xp;
+        GM[xp].y.is_backgap=true;
+    }
     return;
 }
 
@@ -46,17 +46,17 @@ private:
     afg_unit *GM,*GM1,*GM2;
     char *gx,*gy;
     int xsize,ysize;
-    __host__ void initM(int l,int r){
+    __host__ void initM(int l,int r,bool xgap){
         int initx=l-2;
         int cnt=r-l+3;
         int nb=cnt/THREAD_SIZE+((cnt%THREAD_SIZE)>0);
         initM_uf<<<nb,THREAD_SIZE>>>(GM+initx,GM1+initx,GM2+initx,cnt);
-        initM_mf<<<1,1>>>(GM1,l);
+        initM_mf<<<1,1>>>(GM1,l,xgap);
     }
-    __host__ void dp(int xl,int xr,int yl,int yr,int ymid){
+    __host__ void dp(int xl,int xr,int yl,int yr,int ymid,bool xgap){
         int nx=xr-xl+2;// 平行化數量
         int nb=nx/THREAD_SIZE+((nx%THREAD_SIZE)>0);
-        initM(xl,xr);
+        initM(xl,xr,xgap);
         for(int ymover=yl;ymover<=yr+nx-1;ymover++){
             front_uf<<<nb,THREAD_SIZE>>>(GM,GM1,GM2,gx,gy,xl,xr,yl,yr,ymover,ymid);
             cudaMemcpy(GM2+xl-1, GM1+xl-1, nx*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
@@ -86,14 +86,8 @@ public:
         cudaMemset(gy, '-', sizeof(char));
         cudaMemcpy(gy+1, y, ysize*sizeof(char), cudaMemcpyHostToDevice);
     }
-    __host__ int get_xmid(int xl,int xr,int yl,int yr,int ymid){
-        dp(xl,xr,yl,yr,ymid);
-        afg_unit a;
-        cudaMemcpy(&a, GM+xr, sizeof(afg_unit),cudaMemcpyDeviceToHost);
-        return a.cstart_m();
-    }
-    __host__ int get_score(int xl,int xr,int yl,int yr,int ymid){
-        dp(xl,xr,yl,yr,ymid);
+    __host__ res_unit get_xmid(int xl,int xr,int yl,int yr,int ymid,bool xgap){
+        dp(xl,xr,yl,yr,ymid,xgap);
         afg_unit a;
         cudaMemcpy(&a, GM+xr, sizeof(afg_unit),cudaMemcpyDeviceToHost);
         return a.cresult();

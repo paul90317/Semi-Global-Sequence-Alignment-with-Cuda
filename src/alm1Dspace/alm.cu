@@ -8,8 +8,8 @@
 using namespace std;
 
 char *x,*y;
-
-void dfs(FILE* file,afg_controler ac,int xl,int xr,int yl,int yr){
+res_unit res;
+void dfs(FILE* file,afg_controler ac,int xl,int xr,int yl,int yr,bool xgap){
     int xs=(xr-xl+1),ys=(yr-yl+1);
     static char buf[1000];
     if(xs<=0){
@@ -27,11 +27,20 @@ void dfs(FILE* file,afg_controler ac,int xl,int xr,int yl,int yr){
         return;
     }
     int ymid=(yl+yr)/2;
-    int xmid=ac.get_xmid(xl,xr,yl,yr,ymid);
-    dfs(file,ac,xl,xmid-1,yl,ymid-1);
-    sprintf(buf,"%c %c\n",x[xmid-1],y[ymid-1]);
-    fputs(buf,file);
-    dfs(file,ac,xmid+1,xr,ymid+1,yr);
+    res_unit tmp=ac.get_xmid(xl,xr,yl,yr,ymid,xgap);
+    int xmid=tmp.start;
+    if(tmp.is_backgap){//y 對應到 x 後的 gap
+        dfs(file,ac,xl,xmid,yl,ymid-1,xgap);
+        sprintf(buf,"- %c\n",y[ymid-1]);
+        fputs(buf,file);
+        dfs(file,ac,xmid+1,xr,ymid+1,yr,true);
+    }else{
+        dfs(file,ac,xl,xmid-1,yl,ymid-1,xgap);
+        sprintf(buf,"%c %c\n",x[xmid-1],y[ymid-1]);
+        fputs(buf,file);
+        dfs(file,ac,xmid+1,xr,ymid+1,yr,false);
+    }
+    res=tmp;
 }
 
 int main(int argc,char** argv){
@@ -64,8 +73,8 @@ int main(int argc,char** argv){
     //運算
     afg_controler ac(x,y,xsize,ysize);
     file=fopen(argv[3],"w");
-    dfs(file,ac,1,xsize,1,ysize);
+    dfs(file,ac,1,xsize,1,ysize,false);
     fclose(file);
-    printf("best score: %d\n",ac.get_score(1,xsize,1,ysize,0));
+    printf("best score: %d\n",res.score);
 }
 

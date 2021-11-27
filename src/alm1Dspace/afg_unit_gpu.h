@@ -12,37 +12,50 @@
 #define SCORE_HIT 1
 #define SCORE_MIS -1
 
+class res_unit{
+public:
+    int score,start;
+    bool is_backgap;
+    __device__ res_unit(int _score,int _start,bool _is_backgap){
+        score=_score;
+        start=_start;
+        is_backgap=_is_backgap;
+    }
+    __host__ res_unit(){
+
+    }
+    __device__ bool operator>(res_unit& b){
+        return score>b.score;
+    }
+    
+    __device__ void operator=(int s){
+        score=s;
+    }
+    __device__ res_unit operator+(int s){
+        res_unit u(score,start,is_backgap);
+        u.score+=s;
+        return u;
+    }
+};
+
+
 class afg_unit{
 public:
-    int m,x,y;
-    int mstart,xstart,ystart;
-    __device__ int gto_m(bool equ){
+    res_unit m,x,y;
+    __device__ res_unit gto_m(bool equ){
         return max3(m,x,y)+(equ?SCORE_HIT:SCORE_MIS);
     }
-    __device__ int gto_x(){// y have gap, mean x move
+    __device__ res_unit gto_x(){// y have gap, mean x move
         return max3(m+SCORE_G,x+SCORE_E,y+SCORE_G);
     }
-    __device__ int gto_y(){// x have gap, mean y move
+    __device__ res_unit gto_y(){// x have gap, mean y move
         return max3(m+SCORE_G,x+SCORE_G,y+SCORE_E);
     }
 
-    __device__ int start_m(){
-        return max3sel(m,x,y,mstart,xstart,ystart);
+    __host__ res_unit cresult(){
+        return max3sel(m.score,x.score,y.score,m,x,y);
     }
-    __device__ int start_x(){// y have gap, mean x move
-        return max3sel(m+SCORE_G,x+SCORE_E,y+SCORE_G,mstart,xstart,ystart);
-    }
-    __device__ int start_y(){// x have gap, mean y move
-        return max3sel(m+SCORE_G,x+SCORE_G,y+SCORE_E,mstart,xstart,ystart);
-    }
-
-    __host__ int cstart_m(){
-        return max3sel(m,x,y,mstart,xstart,ystart);
-    }
-    __host__ int cresult(){
-        return max3(m,x,y);
-    }
-    __device__ int gresult(){
+    __device__ res_unit gresult(){
         return max3(m,x,y);
     }
 private:
