@@ -11,7 +11,7 @@ y is very long so that I can't save it into array, I use stream to handle it, if
 With DP, it solve in dianal vector(from left top to right bottom), and it normal vector is independent, so we can parallel it with GPU.  
 the time complex can reduce to O(m), which is y's length.  
 ## DNA sequence alignment with GPU  
-**Bottleneck of space**
+**Bottleneck of space**  
 if we save the alignment with linked list table, the space is O(nm) which must exceed the memory a computer, have.
 **Save y interval**  
 We can save just save the position where aligment of y start from and end, space complex is O(n), which is not alignment.  
