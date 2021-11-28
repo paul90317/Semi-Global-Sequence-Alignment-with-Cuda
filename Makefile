@@ -25,25 +25,29 @@ appexe:=app.exe
 checksrc:=src/checkalm.cpp
 checkexe:=checkalm.exe
 
+flatsrc:=src/flat.cpp
+flatexe:=flat.exe
+
 x:=res/x.txt
 y:=res/y.txt
 tmp:=res/tmp.txt
 almout:=res/almout.txt
 
 runall1:$(timeexe) $(appexe) $(afgexe) $(sliceexe) $(almexe1) $(checkexe)
-	$(timeexe) $(appexe) $(x) $(y) $(almout) $(tmp) $(afgexe) $(sliceexe) $(almexe1)
-	$(checkexe) $(almout) $(x) $(tmp)
+	./$(timeexe) $(appexe) $(x) $(y) $(almout) $(tmp) $(afgexe) $(sliceexe) $(almexe1)
+	./$(checkexe) $(almout) $(x) $(tmp)
 
 runall2:$(timeexe) $(appexe) $(afgexe) $(sliceexe) $(almexe2) $(checkexe)
-	$(timeexe) $(appexe) $(x) $(y) $(almout) $(tmp) $(afgexe) $(sliceexe) $(almexe2)
-	$(checkexe) $(almout) $(x) $(tmp)
+	./$(timeexe) $(appexe) $(x) $(y) $(almout) $(tmp) $(afgexe) $(sliceexe) $(almexe2)
+	./$(checkexe) $(almout) $(x) $(tmp)
 
 runcpu: $(timeexe) $(cpuexe) $(x) $(y)
-	$(timeexe) $(cpuexe) $(x) $(y) 
+	./$(timeexe) $(cpuexe) $(x) $(y) 
+
 runafg: $(timeexe) $(afgexe) $(x) $(y) 
-	$(timeexe) $(afgexe) $(x) $(y)
+	./$(timeexe) $(afgexe) $(x) $(y)
 random:$(rdexe)
-	$(rdexe) $(x) 3600 $(y) 100000
+	./$(rdexe) $(x) 3600 $(y) 100000
 
 $(rdexe):
 	g++ $(rdsrc) -o $(rdexe)
@@ -63,6 +67,8 @@ $(appexe):
 	g++ $(appsrc) -o $(appexe)
 $(checkexe):
 	g++ $(checksrc) -o $(checkexe)
+$(flat):
+	g++ $(flatsrc) -o $(flatexe)
 
 clean:rmexe rmres
 
@@ -70,5 +76,6 @@ rmexe:
 	rm *.exe
 	rm *.lib
 	rm *.exp
+	rm *.pdb
 rmres:
 	rm res/*

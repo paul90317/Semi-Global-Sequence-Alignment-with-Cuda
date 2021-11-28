@@ -9,5 +9,6 @@
 *.exp
 *.lib
 *.o
+*.pdb
 res/
 .vscode/
