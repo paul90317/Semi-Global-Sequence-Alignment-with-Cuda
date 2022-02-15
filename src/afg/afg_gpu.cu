@@ -1,24 +1,29 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
-#include "afg_unit_gpu.h"
+#include "../common/afg_unit.cu"
 
 #define BUF_SIZE_Y 10000
 #define THREAD_SIZE 1024
 
 using namespace std;
 
-__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,char* x,char* y,int buf_mover,int index_y,int* maxs,int* init_idy,int* last_idy) {
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,char* x,char* y,int buf_mover,int index_y,res_unit* gbest,int xsize) {
     int t=threadIdx.x+blockDim.x*blockIdx.x;
-    M[t+1].x=M1[t].gto_x();
-    M[t+1].y=M1[t+1].gto_y();
-    M[t+1].m=M2[t].gto_m(x[t]==y[buf_mover-t]);
-    M[t+1].xstart=M1[t].start_x(index_y-t,t);
-    M[t+1].ystart=M1[t+1].start_y();
-    M[t+1].mstart=M2[t].start_m(index_y-t,t);
-    init_idy[t+1]=M[t+1].bests_idy(maxs[t+1],init_idy[t+1]);
+    M[t+1].x=M1[t].to_x();
+    M[t+1].y=M1[t+1].to_y();
+    M[t+1].m=M2[t].to_m(x[t]==y[buf_mover-t]);
+    if(t==0){
+        M[t+1].x.start=index_y+1;
+        M[t+1].m.start=index_y;
+    }
+    /*init_idy[t+1]=M[t+1].bests_idy(maxs[t+1],init_idy[t+1]);
     last_idy[t+1]=M[t+1].bests_lastidy(maxs[t+1],last_idy[t+1],index_y-t);
-    maxs[t+1]=max2(maxs[t+1],M[t+1].gresult());
+    maxs[t+1]=max2(maxs[t+1],M[t+1].gresult());*/
+    if(t+1==xsize){
+        M[t+1].result().end=index_y-t;
+        *gbest=max2(*gbest,M[t+1].result());
+    }
     return;
 }
 
@@ -31,7 +36,7 @@ int main(int argc,char** argv){
     FILE* file;
     char *x,*y,*gx,*gy,*oldgy,*nextgy;
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
-    int xsize,buf_mover,tmp,nthread,nblock,nsize,index_y,*gmaxs,*init_idy,*last_idy,ysize;
+    int xsize,buf_mover,nthread,nblock,nsize,index_y,ysize;
 
     if(argc!=3){
         cout<<"Follow format: command [x.txt] [y.txt]\n";
@@ -68,21 +73,11 @@ int main(int argc,char** argv){
 
     //初始化 M
     buf_mover=0;
-    index_y=1;
+    index_y=0;
 
-    M1[0].y=0;
-    M2[0].y=0;
-
-    M2[1].x=SCORE_G;
-    M1[2].x=SCORE_G+SCORE_E;
-
-    M1[1].m=afg_unit::equal(x[0]==y[buf_mover++]);
-    M1[1].y=M2[1].to_y();
-    M1[1].x=M2[0].to_x();
-
-    M1[1].mstart=0;
-    M1[1].xstart=0;
-    M1[1].ystart=0;
+    M[0].m=0;
+    M1[0].m=0;
+    M2[0].m=0;
 
     //GPU COPY
     cudaMalloc(&GM, (nsize+1)*sizeof(afg_unit));
@@ -104,18 +99,15 @@ int main(int argc,char** argv){
     gy=gy+nsize;
     cudaMemcpy(gy, y, BUF_SIZE_Y*sizeof(char), cudaMemcpyHostToDevice);//???
 
-    cudaMalloc(&gmaxs, (nsize+1)*sizeof(int));
-    tmp=NEG_INF;
-    cudaMemcpy(gmaxs+xsize,&tmp,sizeof(int),cudaMemcpyHostToDevice);
-
-    cudaMalloc(&init_idy, (nsize+1)*sizeof(int));
-    cudaMalloc(&last_idy, (nsize+1)*sizeof(int));
-
     //分段讀取並運算
+    res_unit best;
+    res_unit* gbest;
+    cudaMalloc(&gbest,sizeof(res_unit));
+    cudaMemcpy(gbest,&best,sizeof(res_unit),cudaMemcpyHostToDevice);
     while(true){
         //可平行化運算
         while(buf_mover<BUF_SIZE_Y&&index_y<ysize){
-            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gmaxs,init_idy,last_idy);
+            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gbest,xsize);
             cudaMemcpy(GM2+1, GM1+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1+1, GM+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
             buf_mover++;
@@ -134,7 +126,7 @@ int main(int argc,char** argv){
     
     while (index_y<ysize+xsize-1)
     {
-        calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gmaxs,init_idy,last_idy);
+        calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gbest,xsize);
         cudaMemcpy(GM2+1, GM1+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
         cudaMemcpy(GM1+1, GM+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
         buf_mover++;
@@ -142,11 +134,7 @@ int main(int argc,char** argv){
     }
 
     //取出結果
-    cudaMemcpy(&tmp,gmaxs+xsize,sizeof(int),cudaMemcpyDeviceToHost);//best score
-    printf("%d ",tmp);
-    cudaMemcpy(&tmp,init_idy+xsize,sizeof(int),cudaMemcpyDeviceToHost);//inital index
-    printf("%d ",tmp);
-    cudaMemcpy(&tmp,last_idy+xsize,sizeof(int),cudaMemcpyDeviceToHost);//last index
-    printf("%d",tmp);
+    cudaMemcpy(&best,gbest,sizeof(res_unit),cudaMemcpyDeviceToHost);//best score
+    printf("%d %d %d",best.score,best.start,best.end);
 }
 

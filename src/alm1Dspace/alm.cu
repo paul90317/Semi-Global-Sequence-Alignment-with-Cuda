@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
-#include "afg_controler.h"
+#include "afg_controller.cu"
 
 #define THREAD_SIZE 1024
 
@@ -9,7 +9,7 @@ using namespace std;
 
 char *x,*y;
 res_unit res;
-void dfs(FILE* file,afg_controler ac,int xl,int xr,int yl,int yr,bool xgap){
+void dfs(FILE* file,afg_controller ac,int xl,int xr,int yl,int yr,bool xgap){
     int xs=(xr-xl+1),ys=(yr-yl+1);
     static char buf[1000];
     if(xs<=0){
@@ -71,7 +71,7 @@ int main(int argc,char** argv){
     fclose(file);
 
     //運算
-    afg_controler ac(x,y,xsize,ysize);
+    afg_controller ac(x,y,xsize,ysize);
     file=fopen(argv[3],"w");
     dfs(file,ac,1,xsize,1,ysize,false);
     fclose(file);

@@ -67,7 +67,7 @@ $(appexe):
 	g++ $(appsrc) -o $(appexe)
 $(checkexe):
 	g++ $(checksrc) -o $(checkexe)
-$(flat):
+$(flatexe):
 	g++ $(flatsrc) -o $(flatexe)
 
 clean:rmexe rmres
