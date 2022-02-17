@@ -1,158 +1,150 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
-#include "../common/afg_unit.cu"
-#include "../common/score4.cu"
-#include "../common/dim.cu"
 
-#define BUF_SIZE_Y 10000
-#define THREAD_SIZE 1024
+#include "utils.cuh"
+#include "afg_unit.cuh"
+#include "config.cuh"
+#include "layout.cuh"
+#define Y_NOT_END(idy,xsize,ysize) (((idy)-(xsize)-1)<=(ysize))
 
-using namespace std;
-
-__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,char* x,char* y,int buf_mover,int index_y,res_unit* gbest,int xsize) {
-    int t=threadIdx.x+blockDim.x*blockIdx.x;
-    M[t+1].x=M1[t].to_x();
-    M[t+1].y=M1[t+1].to_y();
-    M[t+1].m=M2[t].to_m(x[t]==y[buf_mover-t]);
-    if(t==0){
-        M[t+1].x.start=index_y+1;
-        M[t+1].m.start=index_y;
+__global__ void calculate_yfreeStart(afg_unit* M,int* x,int* y,int index_y,res_unit* gbest,int xsize,int ysize) {
+    int tid=TID;
+    int xid=tid+1;
+    int yid=index_y-xid-1;
+    if(xid<1||yid<0||xid>xsize||yid>ysize)return;
+    M[dimcf(0,xid)].x=M[dimcf(1,xid-1)].to_x();
+    M[dimcf(0,xid)].y=M[dimcf(1,xid)].to_y();
+    M[dimcf(0,xid)].m=M[dimcf(2,xid-1)].to_m(x[xid],y[yid]);
+    if(xid==1){
+        M[dimcf(0,xid)].x.ystart=yid+1;
+        M[dimcf(0,xid)].m.ystart=yid;
     }
-    if(t+1==xsize){
-        M[t+1].result().end=index_y-t;
-        *gbest=max2(*gbest,M[t+1].result());
+    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END||Y_FREE_END&&X_FREE_END){
+        M[dimcf(0,xid)].result().xend=xid;
+        M[dimcf(0,xid)].result().yend=yid;
+        *gbest=max2(*gbest,M[dimcf(0,xid)].result());
     }
-    return;
 }
-
-__global__ void gmemset(int* m,int val) {
-    int t=threadIdx.x+blockDim.x*blockIdx.x;
-    m[t+1]=val;
+__global__ void calculate_xyfreeStart(afg_unit* M,int* x,int* y,int index_y,res_unit* gbest,int xsize,int ysize) {
+    int xid=TID;
+    int yid=index_y-xid-1;
+    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
+    res_unit zero(0,xid+1,xid,yid+1,yid,false);
+    M[dimcf(0,xid)].x=max2(M[dimcf(1,xid-1)].to_x(),zero);
+    M[dimcf(0,xid)].y=max2(M[dimcf(1,xid)].to_y(),zero);
+    M[dimcf(0,xid)].m=max2(M[dimcf(2,xid-1)].to_m(x[xid],y[yid]),zero);
+    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END||Y_FREE_END&&X_FREE_END){
+        M[dimcf(0,xid)].result().xend=xid;
+        M[dimcf(0,xid)].result().yend=yid;
+        *gbest=max2(*gbest,M[dimcf(0,xid)].result());
+    }
+}
+__global__ void calculate_fixedStart(afg_unit* M,int* x,int* y,int index_y,res_unit* gbest,int xsize,int ysize) {
+    int xid=TID;
+    int yid=index_y-xid-1;
+    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
+    M[dimcf(0,xid)].x=M[dimcf(1,xid-1)].to_x();
+    M[dimcf(0,xid)].y=M[dimcf(1,xid)].to_y();
+    M[dimcf(0,xid)].m=M[dimcf(2,xid-1)].to_m(x[xid],y[yid]);
+    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END||Y_FREE_END&&X_FREE_END){
+        M[dimcf(0,xid)].result().xend=xid;
+        M[dimcf(0,xid)].result().yend=yid;
+        *gbest=max2(*gbest,M[dimcf(0,xid)].result());
+    }
+}
+__global__ void calculate_xfreeStart(afg_unit* M,int* x,int* y,int index_y,res_unit* gbest,int xsize,int ysize) {
+    int xid=TID;
+    int yid=index_y-xid-1;
+    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
+    M[dimcf(0,xid)].x=M[dimcf(1,xid-1)].to_x();
+    M[dimcf(0,xid)].y=M[dimcf(1,xid)].to_y();
+    M[dimcf(0,xid)].m=M[dimcf(2,xid-1)].to_m(x[xid],y[yid]);
+    if(yid==0){
+        M[dimcf(0,xid)].m=0;
+    }
+    if(yid==1){
+        M[dimcf(0,xid)].m.xstart=xid;
+        M[dimcf(0,xid)].y.xstart=xid+1;
+    }
+    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END||Y_FREE_END&&X_FREE_END){
+        M[dimcf(0,xid)].result().xend=xid;
+        M[dimcf(0,xid)].result().yend=yid;
+        *gbest=max2(*gbest,M[dimcf(0,xid)].result());
+    }
 }
 
 int main(int argc,char** argv){
-    FILE* file;
-    char *x,*y;
-    int *gx_int,*gy_int,*x_int,*y_int;
+    int *gx_int,*gy_int;
     afg_unit *M,*GM;
-    int xsize,ysize,index_y;
+    int xsize,ysize;
     int nthread,nblock;
-    if(argc!=3){
-        cout<<"Follow format: command [x.txt] [y.txt]\n";
-        return 0;
-    }
+    
     //common
     gscore_matrix_load();
 
-    //讀取 x
-    file=fopen(argv[1],"r");
-    fseek(file,0,SEEK_END);
-    xsize=ftell(file);
-    fseek(file,0,SEEK_SET);
-    x=new char[xsize+1];
-    fgets(x,xsize+1,file);
-    fclose(file);
-    x_int=new int[xsize+1];
-    x_int[0]=-1;
-    for(int i=0;i<xsize;i++){
-        x_int[i+1]=mapping_DNA(x[i]);
+    //讀取
+    if(!load_file(&gx_int,&xsize,filename_x)){
+        printf("讀不到 x 序列");
+        exit(0);
+    };
+    if(!load_file(&gy_int,&ysize,filename_y)){
+        printf("讀不到 y 序列");
+        exit(0);
     }
-    cudaMalloc(&gx_int,sizeof(int)*(xsize+1));
-    cudaMemset(gx_int,-1,sizeof(int));
-    cudaMemcpy(gx_int+1,x_int,sizeof(int)*xsize,cudaMemcpyHostToDevice);
-    //讀取 y
-    file=fopen(argv[2],"r");
-    fseek(file,0,SEEK_END);
-    ysize=ftell(file);
-    fseek(file,0,SEEK_SET);
-    y=new char[ysize+1];
-    fgets(y,ysize+1,file);
-    fclose(file);
 
-    //初始化 cuda 參數
-    nthread=min(xsize,THREAD_SIZE);
-    nblock=xsize/THREAD_SIZE;
-    if(xsize%THREAD_SIZE)nblock++;
-    nsize=nblock*nthread;
-
-    //動態規劃 M
-    M=new afg_unit[nsize+1];
-    M1=new afg_unit[nsize+1];
-    M2=new afg_unit[nsize+1];
-
-    //讀取 y buffer
-    y=new char[BUF_SIZE_Y+1];
-    file=fopen(argv[2],"r");
-    fseek(file,0,SEEK_END);
-    ysize=ftell(file);
-    fseek(file,0,SEEK_SET);
-    fgets (y , BUF_SIZE_Y+1 , file);// 讀 BUF_SIZE_Y 個
-
-    //初始化 M
-    buf_mover=0;
-    index_y=0;
-
-    M[0].m=0;
-    M1[0].m=0;
-    M2[0].m=0;
-
-    //GPU COPY
-    cudaMalloc(&GM, (nsize+1)*sizeof(afg_unit));
-    cudaMalloc(&GM1, (nsize+1)*sizeof(afg_unit));
-    cudaMalloc(&GM2, (nsize+1)*sizeof(afg_unit));
-    
-    cudaMemcpy(GM, M, (nsize+1)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-    cudaMemcpy(GM1, M1, (nsize+1)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-    cudaMemcpy(GM2, M2, (nsize+1)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-
-    cudaMalloc(&gx, nsize*sizeof(char));
-    cudaMemset(gx, 0, nsize*sizeof(char));
-    cudaMemcpy(gx, x, xsize*sizeof(char), cudaMemcpyHostToDevice);
-
-    cudaMalloc(&gy, (BUF_SIZE_Y+nsize+xsize-1)*sizeof(char));
-    cudaMemset(gy, 0, (BUF_SIZE_Y+nsize+xsize-1)*sizeof(char));
-    oldgy=gy;
-    nextgy=gy+BUF_SIZE_Y;
-    gy=gy+nsize;
-    cudaMemcpy(gy, y, BUF_SIZE_Y*sizeof(char), cudaMemcpyHostToDevice);//???
-
-    //分段讀取並運算
-    res_unit best;
+    //宣告最佳解
+    res_unit best,last;
     res_unit* gbest;
     cudaMalloc(&gbest,sizeof(res_unit));
     cudaMemcpy(gbest,&best,sizeof(res_unit),cudaMemcpyHostToDevice);
-    while(true){
-        //可平行化運算
-        while(buf_mover<BUF_SIZE_Y&&index_y<ysize){
-            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gbest,xsize);
-            cudaMemcpy(GM2+1, GM1+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
-            cudaMemcpy(GM1+1, GM+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
-            buf_mover++;
-            index_y++;
+    printf("*Remind: the interval start from 1, not 0\n");
+
+    //挖記憶體
+    M=new afg_unit[(xsize+2)*3];
+    M+=3;
+    cudaMalloc(&GM, 3*(xsize+2)*sizeof(afg_unit));
+    GM+=3;
+
+    //分支
+    switch(X_FREE_START+Y_FREE_START*2){
+    case 0:
+    case 1:
+    case 3:
+        M[dimcf(1,0)].m=0;
+        cudaMemcpy(GM-3, M-3, 3*(xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
+        thread_assign(xsize+1,&nblock,&nthread);
+        for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
+            switch(X_FREE_START+Y_FREE_START*2){
+            case 0:calculate_fixedStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,gbest,xsize,ysize);
+                break;
+            case 1:calculate_xfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,gbest,xsize,ysize);
+                break;
+            case 3:calculate_xyfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,gbest,xsize,ysize);
+                break;
+            }
+            dim_move(GM,xsize+1);
         }
-        
-        //讀取 buffer
-        if(fgets (y , BUF_SIZE_Y+1 , file)==NULL)break;
-        //左移並寫入 buffer
-        cudaMemcpy(oldgy, nextgy, nsize*sizeof(char),cudaMemcpyDeviceToDevice);
-        buf_mover=0;
-        cudaMemcpy(gy, y, BUF_SIZE_Y*sizeof(char),cudaMemcpyHostToDevice);
-    };
-
-    fclose(file);
-    
-    while (index_y<ysize+xsize-1)
-    {
-        calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx,gy,buf_mover,index_y,gbest,xsize);
-        cudaMemcpy(GM2+1, GM1+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
-        cudaMemcpy(GM1+1, GM+1, nsize*sizeof(afg_unit),cudaMemcpyDeviceToDevice);
-        buf_mover++;
-        index_y++;
+        break;
+    case 2:
+        M[dimcf(0,0)].m=0;
+        M[dimcf(1,0)].m=0;
+        M[dimcf(2,0)].m=0;
+        cudaMemcpy(GM-3, M-3, 3*(xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
+        thread_assign(xsize,&nblock,&nthread);
+        for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
+            calculate_yfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,gbest,xsize,ysize);
+            dim_move(GM+3,xsize);
+        }
+        break;
     }
-
-    //取出結果
+    //印出結果
     cudaMemcpy(&best,gbest,sizeof(res_unit),cudaMemcpyDeviceToHost);//best score
-    printf("%d %d %d",best.score,best.start,best.end);
+    cudaMemcpy(&last,GM+dimcf(0,xsize),sizeof(res_unit),cudaMemcpyDeviceToHost);//last
+    last.xend=xsize;
+    last.yend=ysize;
+    best=max2(best,last);
+    show_best_and_output_file(best,xsize,ysize);
+        
 }
 
