@@ -1,12 +1,15 @@
-workdir := ..
-out := $(workdir)/out
+out := ../out
 includes := -I headers
-run:
-	nvcc $(includes) 2free/afg.cu -o $(out)/2free
-	$(out)/2free
+files := */main.cu
 
-clean: 
-	rm -rf *.obj
-	rm -rf $(workdir)/out/*
+ls:
+	@echo $(files)
 
-.PHONY: run
+%.exe:./%/main.cu
+	nvcc $(includes) $< -o $(out)/$@
+	$(out)/$@
+
+cl: 
+	rm -rf $(out)/*
+
+.PHONY: ls

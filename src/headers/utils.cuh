@@ -1,28 +1,37 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include "config.cuh"
+#include "stdlib.h"
 #define dimcf(st,i) (3*(i)+(st))
 #define TID (blockDim.x*blockIdx.x+threadIdx.x)
 #define max2(a,b) (((a)>(b))?(a):(b))
 #define max3(a,b,c) max2((a),(max2((b),(c))))
 #define __all__ __device__ __host__
 __host__ int mapping_Char(char c);
+template<typename T>
+T* oalloc(int count){
+    return (T*)malloc(count*sizeof(T));
+}
 __host__ bool load_file(int** px,int* xsize,const char* filename){
     FILE* file=fopen(filename,"r");
     if(file==NULL)return false;
     fseek(file,0,SEEK_END);
     *xsize=ftell(file);
     fseek(file,0,SEEK_SET);
-    char* x=new char[*xsize+1];
-    fgets(x,*xsize+1,file);
-    fclose(file);
-    int* x_int=new int[*xsize+1];
+    int* x_int=oalloc<int>(*xsize+1);
     x_int[0]=0;
-    for(int i=0;i<*xsize;i++){
-        x_int[i+1]=mapping_Char(x[i]);
+    int j=0;
+    char c;
+    while(c=getc(file),c!=EOF){
+        if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9'))continue;
+        x_int[j+1]=mapping_Char(c);
+        j++;
     }
+    *xsize=j;
     cudaMalloc(px,sizeof(int)*(*xsize+1));
     cudaMemcpy(*px,x_int,sizeof(int)*(*xsize+1),cudaMemcpyHostToDevice);
+    free(x_int);
+    fclose(file);
     return true;
 }
 namespace protected_space{
@@ -50,7 +59,7 @@ __host__ int mapping_Char(char c){
     for(int i=0;i<CHAR_NUMBER;i++){
         if(c==protected_space::Char_map[i])return i;
     }
-    printf("Char not found!!\n");
+    printf("Char [%c] not found!!\n",c);
     exit(0);
 }
 __host__ char to_Char(int i){

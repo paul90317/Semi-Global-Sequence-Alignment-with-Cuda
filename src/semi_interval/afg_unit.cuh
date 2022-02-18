@@ -11,13 +11,12 @@ public:
     int ystart,yend;
     int xstart,xend;
     bool is_backgap;
-    __all__ res_unit(datatype _score, int _xstart,int _xend,int _ystart,int _yend,bool _is_backgap){
+    __all__ res_unit(datatype _score, int _xstart,int _xend,int _ystart,int _yend){
         score=_score;
         xstart=_xstart;
         xend=_xend;
         ystart=_ystart;
         yend=_yend;
-        is_backgap=_is_backgap;
     }
     __all__ res_unit(){
         score=NEG_INF;
@@ -32,7 +31,7 @@ public:
         score=s;
     }
     __all__ res_unit operator+(datatype s){
-        res_unit u(score,xstart,xend,ystart,yend,is_backgap);
+        res_unit u(score,xstart,xend,ystart,yend);
         u.score+=s;
         return u;
     }
