@@ -47,4 +47,14 @@ int interval_result_from_gup(res_unit** C_dst,res_unit* G_src,int* G_sz){
     return csize;
 }
 
+datatype interval_result_from_gup(res_unit** C_dst,res_unit* G_src,int count){
+    *C_dst=(res_unit*)malloc(sizeof(res_unit)*count);
+    cudaMemcpy(*C_dst,G_src,sizeof(res_unit)*count,cudaMemcpyDeviceToHost);
+    datatype best=NEG_INF;
+    for(int i=0;i<count;i++){
+        best=max2(best,(*C_dst)[i].score);
+    }
+    return best;
+}
+
 #endif
