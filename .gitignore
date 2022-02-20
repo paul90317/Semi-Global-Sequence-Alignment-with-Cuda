@@ -12,3 +12,4 @@
 *.pdb
 res/
 .vscode/
+out/

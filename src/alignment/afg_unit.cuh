@@ -1,18 +1,19 @@
 //2D DP 陣列的單元
+
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
+
+#include "utils.cuh"
 
 class res_unit{
 public:
     datatype score;
-    int ystart,yend;
-    int xstart,xend;
-    __all__ res_unit(datatype _score, int _xstart,int _xend,int _ystart,int _yend){
+    int xmid;
+    bool is_xbackgap;
+    __all__ res_unit(datatype _score, int _xmid,bool _is_xbackgap){
         score=_score;
-        xstart=_xstart;
-        xend=_xend;
-        ystart=_ystart;
-        yend=_yend;
+        xmid=_xmid;
+        is_xbackgap=_is_xbackgap;
     }
     __all__ res_unit(){
         score=NEG_INF;
@@ -27,7 +28,7 @@ public:
         score=s;
     }
     __all__ res_unit operator+(datatype s){
-        res_unit u(score,xstart,xend,ystart,yend);
+        res_unit u(score,xmid,is_xbackgap);
         u.score+=s;
         return u;
     }

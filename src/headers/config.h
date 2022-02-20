@@ -2,22 +2,29 @@
 #define CONFIG_H
 
 //GPU 計算參數
-#define THREAD_SIZE 1024 //最大 1024，最小 1
+#define THREAD_SIZE 256 //最大 1024，最小 1
 
 //最佳區間的儲存設定
 #define BEST_STACK_SIZE 1000 //能儲存的最好解的最大值(最小1)，
 #define SAFE_PUSH_MODE true //程式是否判定是否超過上限
-#define BEST_DIFF 3 //定義與最佳比對分數少多少的上限，超過可以推入最佳解 stack
+#define BEST_DIFF 1 //定義與最佳比對分數少多少的上限，超過可以推入最佳解 stack
+
+//顯示設定
+#define BEST_SHOW_NUMBER 3 //指定 semi_interval.exe 顯示多少區間
+
+//比對目標
+#define DEFAULT_INTERVAL_INDEX 100 //指定 alignment.exe 對哪一條區間進行比對，從 0 開始
 
 //檔案
-const char filename_x[]="../res/NC_000014.9[33600000..34599999].fa";//序列一
-const char filename_y[]="../res/NC_000006.12[100000..1099999].fa";//序列二
+const char filename_x[]="../res/x.txt";//序列一
+const char filename_y[]="../res/y.txt";//序列二
 const char filename_best_score_interval[]="../res/best.txt";//區間結果儲存
+const char filename_alignment[]="../res/alignment.txt";//sequence alignment 結果
 
 //semi 設定
-#define X_FREE_START true
+#define X_FREE_START false
 #define Y_FREE_START true
-#define X_FREE_END true
+#define X_FREE_END false
 #define Y_FREE_END true
 
 //分數設定

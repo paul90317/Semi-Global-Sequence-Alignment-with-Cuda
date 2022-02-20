@@ -4,13 +4,12 @@
 
 #include "utils.cuh"
 #include "afg_unit.cuh"
-#include "config.cuh"
+#include "config.h"
 #include "layout.cuh"
 #include "macro.cuh"
 #include "test_time.h"
 
-
-__global__ void calculate_yfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count) {
+__global__ void calculate_yfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) {
     int tid=TID;
     int xid=tid+1;
     int yid=index_y-xid-1;
@@ -27,13 +26,13 @@ __global__ void calculate_yfreeStart(afg_unit* M,int* x,int* y,int index_y,int x
     if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
 #endif
         res_unit& now=M[dimcf(0,xid)].result();
-        update_score(now,xid,yid,best_stack,bs_count);
+        update_score(now,xid,yid,best_stack,bs_count,bscore);
 #if !(Y_FREE_END&&X_FREE_END)
     }
 #endif
 #endif
 }
-__global__ void calculate_xyfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count) {
+__global__ void calculate_xyfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) {
     int xid=TID;
     int yid=index_y-xid-1;
     if(xid<0||yid<0||xid>xsize||yid>ysize)return;
@@ -46,13 +45,13 @@ __global__ void calculate_xyfreeStart(afg_unit* M,int* x,int* y,int index_y,int 
     if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
 #endif
         res_unit& now=M[dimcf(0,xid)].result();
-        update_score(now,xid,yid,best_stack,bs_count);
+        update_score(now,xid,yid,best_stack,bs_count,bscore);
 #if !(Y_FREE_END&&X_FREE_END)
     }
 #endif
 #endif
 }
-__global__ void calculate_fixedStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count) {
+__global__ void calculate_fixedStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) {
     int xid=TID;
     int yid=index_y-xid-1;
     if(xid<0||yid<0||xid>xsize||yid>ysize)return;
@@ -64,13 +63,13 @@ __global__ void calculate_fixedStart(afg_unit* M,int* x,int* y,int index_y,int x
     if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
 #endif
         res_unit& now=M[dimcf(0,xid)].result();
-        update_score(now,xid,yid,best_stack,bs_count);
+        update_score(now,xid,yid,best_stack,bs_count,bscore);
 #if !(Y_FREE_END&&X_FREE_END)
     }
 #endif
 #endif
 }
-__global__ void calculate_xfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count) {
+__global__ void calculate_xfreeStart(afg_unit* M,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) {
     int xid=TID;
     int yid=index_y-xid-1;
     if(xid<0||yid<0||xid>xsize||yid>ysize)return;
@@ -89,7 +88,7 @@ __global__ void calculate_xfreeStart(afg_unit* M,int* x,int* y,int index_y,int x
     if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
 #endif
         res_unit& now=M[dimcf(0,xid)].result();
-        update_score(now,xid,yid,best_stack,bs_count);
+        update_score(now,xid,yid,best_stack,bs_count,bscore);
 #if !(Y_FREE_END&&X_FREE_END)
     }
 #endif
@@ -110,21 +109,18 @@ int main(int argc,char** argv){
         printf("讀不到 x 序列");
         exit(0);
     }
-    std::cout<<filename_x<<": "<<xsize<<"\n";
+    std::cout<<"X sequence: "<<filename_x<<" , Global interval=[1, "<<xsize<<"]\n";
     if(!load_file(&gy_int,&ysize,filename_y)){
         printf("讀不到 y 序列");
         exit(0);
     }
-    std::cout<<filename_y<<": "<<ysize<<"\n";
-    xsize=min(1000,xsize);
-    ysize=min(10000,ysize);
+    std::cout<<"Y sequence: "<<filename_y<<" , Global interval=[1, "<<ysize<<"]\n";
     //宣告最佳解
     res_unit* g_best_stack;
     int* g_bs_count;
     cudaMalloc(&g_best_stack,sizeof(res_unit)*BEST_STACK_SIZE);
     cudaMalloc(&g_bs_count,sizeof(int));
     cudaMemset(g_bs_count,0,sizeof(int));
-    printf("*Remind: the interval start from 1, not 0\n");
 
     //挖記憶體
     M=new afg_unit[(xsize+2)*3];
@@ -132,6 +128,9 @@ int main(int argc,char** argv){
     cudaMalloc(&GM, 3*(xsize+2)*sizeof(afg_unit));
     GM+=3;
 
+    datatype* g_best_score;
+    cudaMalloc(&g_best_score,sizeof(datatype));
+    assign_single(g_best_score,(datatype)NEG_INF);
     
     //分支
     time_start();
@@ -142,7 +141,7 @@ int main(int argc,char** argv){
     cudaMemcpy(GM-3, M-3, 3*(xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
     thread_assign(xsize,&nblock,&nthread);
     for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
-        calculate_yfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count);
+        calculate_yfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
         dim_move(GM+3,xsize);
     }
 #else
@@ -151,26 +150,30 @@ int main(int argc,char** argv){
     thread_assign(xsize+1,&nblock,&nthread);
     for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
     #if (START_MODE==0)
-        calculate_fixedStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count);
+        calculate_fixedStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
     #elif (START_MODE==1)
-        calculate_xfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count);
+        calculate_xfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
     #elif (START_MODE==3)
-        calculate_xyfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count);
+        calculate_xyfreeStart<<<nblock,nthread>>>(GM,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
     #endif
         dim_move(GM,xsize+1);
     }
 #endif
     time_end();
-
+    std::cout<<"Best interval saved in: "<<filename_best_score_interval<<"\n\n";
     //印出結果
 #if (!X_FREE_END&&!Y_FREE_END)
     res_unit last;
     cudaMemcpy(&last,GM+dimcf(0,xsize),sizeof(res_unit),cudaMemcpyDeviceToHost);//last
+    std::cout<<"Best score: "<<last.score<<"\n";
     show_best_and_output_file(last,xsize,ysize);
 #else
+    datatype ctmp_bscore;
+    cudaMemcpy(&ctmp_bscore,g_best_score,sizeof(datatype),cudaMemcpyDeviceToHost);
+    std::cout<<"Best score: "<<ctmp_bscore<<"\n";
     res_unit*cbest_stack;
     int c_bs_count=interval_result_from_gup(&cbest_stack,g_best_stack,g_bs_count);
-    show_best_and_output_file(cbest_stack,c_bs_count,xsize,ysize);
+    show_best_and_output_file(cbest_stack,c_bs_count,xsize,ysize,ctmp_bscore);
 #endif
 }
 
