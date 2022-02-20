@@ -27,7 +27,7 @@ semi_interval.exe |no coalescing |  35.58s
 alignment.exe |no coalescing | 40.35s
 ## Test  
 ### enviroment 
-**`OS`** `win10` 
+**`OS`** `win10`  
 **`nvidia-smi`**  
 ```cmd
 +-----------------------------------------------------------------------------+
