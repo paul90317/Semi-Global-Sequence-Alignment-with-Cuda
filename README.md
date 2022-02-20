@@ -17,7 +17,7 @@ This version(branch) may have less performace(only x2 speed up than cpu), that b
 However when I make some small program in [./test](./test) to test for this, I found there is a lot of thing need to mention, the biggest cost is switch into or out from the cuda kernel, and second is global memory coalescing.  
 so next version, I will move for loop into gpu kernel function and make global memory coalescing.
 ## Test  
-* 環境  
+### enviroment  
 **`nvidia-smi`**  
 ```cmd
 +-----------------------------------------------------------------------------+
@@ -32,7 +32,7 @@ so next version, I will move for loop into gpu kernel function and make global m
 |                               |                      |                  N/A |
 +-------------------------------+----------------------+----------------------+
 ```
-* 執行結果  
+### result  
 **`make semi_interval.exe`**  
 ```txt
 X sequence: ../res/x.txt , Global interval=[1, 16641]
@@ -44,9 +44,18 @@ Best interval saved in: ../res/best.txt
 Best score: -90273
 score= -90273; x=[1, 16641]; y=[1, 118436]
 ```
-**`make semi_interval.exe`**
+**`make cpu.exe`**
 ```txt
 Time taken: 65.37s
 Best global alignment score: -90273
 ```
+**`alignment.exe`**
+```txt
+Load semi interval from ../res/best.txt , Index=100, Score=-90273
+X sequence: ../res/x.txt , Semi interval=[1, 16641]
+Y sequence: ../res/x.txt , Semi interval=[1, 118436]
 
+Time taken: 40.35s
+Best score: -90273
+The score of alignment ../res/alignment.txt is -90273
+```
