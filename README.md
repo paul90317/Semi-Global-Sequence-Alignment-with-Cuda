@@ -15,7 +15,7 @@ You need to go to source directory [src](./src/), then use `make`.
 ## Performance  
 This version(branch) may have less performace(only x2 speed up than cpu), that because I don't consider with some detail when program cuda code.  
 However when I make some small program in [./test](./test) to test for this, I found there is a lot of thing need to mention, the biggest cost is switch into or out from the cuda kernel, and second is global memory coalescing.  
-so next version, I will move for loop into gpu kernel function and make global memory coalescing.
+So in next version, I will move for loop into gpu kernel function and make global memory coalescing.
 ## Test  
 ### enviroment  
 **`nvidia-smi`**  
