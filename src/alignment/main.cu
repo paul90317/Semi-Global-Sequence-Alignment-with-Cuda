@@ -72,10 +72,10 @@ int main(int argc,char** argv){
 
     //讀取 y
     if(!load_file(&gy,&dfs::y_int,filename_y,yl,yr)){
-        std::cout<<"can't read x sequence!!!\n";
+        std::cout<<"can't read y sequence!!!\n";
         exit(1);
     }
-    std::cout<<"Y sequence: "<<filename_x<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";
+    std::cout<<"Y sequence: "<<filename_y<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";
 
     //運算
     dfs::ac=afg_controller(gx,gy,xsz);

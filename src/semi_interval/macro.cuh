@@ -20,6 +20,7 @@ __device__ inline void update_score(res_unit& now,int xid,int yid,res_unit*best_
         *best_score=max2((*best_score),now.score);
     }
 }
+
 #define Y_NOT_END(idy,xsize,ysize) (((idy)-(xsize)-1)<=(ysize))
 #define START_MODE (X_FREE_START+Y_FREE_START*2)
 
@@ -27,5 +28,17 @@ template<typename T>
 void assign_single(T* g_dst,T c_value){
     cudaMemcpy(g_dst,&c_value,sizeof(T),cudaMemcpyHostToDevice);
 }
-
+namespace protected_space{
+    template<typename T>
+    __global__ void _assign_arr(T* g_arr,T value,int count){
+        int tid=TID;
+        if(tid<count)g_arr[tid]=value;
+    }
+}
+template<typename T>
+inline void assign_arr(T* g_arr,T value,int count){
+    int nb,nt;
+    thread_assign(count,&nb,&nt);
+    protected_space::_assign_arr _kernel(nb,nt)(g_arr,value,count);
+}
 #endif
