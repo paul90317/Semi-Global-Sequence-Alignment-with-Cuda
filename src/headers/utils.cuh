@@ -3,7 +3,6 @@
 #include "config.h"
 #include "stdlib.h"
 #include "utils.h"
-#define dimcf(st,i) (3*(i)+(st))
 #define TID (blockDim.x*blockIdx.x+threadIdx.x)
 
 #define __all__ __device__ __host__

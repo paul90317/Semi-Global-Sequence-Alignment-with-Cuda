@@ -57,22 +57,4 @@ public:
 
 };
 
-//dimension move
-namespace protected_space
-{
-    __global__ void _dim_move(afg_unit* M,int count3){
-        int tid=TID;
-        if(tid>=count3)return;
-        M[dimcf(2,tid)]=M[dimcf(1,tid)];
-        M[dimcf(1,tid)]=M[dimcf(0,tid)];
-    }
-} // namespace protected_space
-
-
-__host__ void dim_move(afg_unit* M,int count3){
-    int b,t;
-    thread_assign(count3,&b,&t);
-    protected_space::_dim_move<<<b,t>>>(M,count3);
-}
-
 #endif
