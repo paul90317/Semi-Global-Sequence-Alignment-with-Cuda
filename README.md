@@ -49,7 +49,7 @@ score= -90273; x=[1, 16641]; y=[1, 118436]
 Time taken: 65.37s
 Best global alignment score: -90273
 ```
-**`alignment.exe`**
+**`make alignment.exe`**
 ```txt
 Load semi interval from ../res/best.txt , Index=100, Score=-90273
 X sequence: ../res/x.txt , Semi interval=[1, 16641]
