@@ -13,11 +13,22 @@ void show_best_and_output_file(res_unit* bests,int count,int xsize,int ysize,dat
         res_unit best=bests[i];
         datatype score=best.score;
         if(score<best_score-BEST_DIFF)continue;
-        int xstart=X_FREE_START?best.xstart:1;
-        int ystart=Y_FREE_START?best.ystart:1;
-        int xend=X_FREE_END?best.xend:xsize;
-        int yend=Y_FREE_END?best.yend:ysize;
-
+        int xstart=1;
+        int ystart=1;
+        int xend=xsize;
+        int yend=ysize;
+    #if X_FREE_START
+        xstart=best.xstart;
+    #endif
+    #if X_FREE_END
+        xend=best.xend;
+    #endif
+    #if Y_FREE_START
+        ystart=best.ystart;
+    #endif
+    #if Y_FREE_END
+        yend=best.yend;
+    #endif
         if(k<BEST_SHOW_NUMBER)std::cout<<"score= "<<score<<"; x=["<<xstart<<", "<<xend<<"]; y=["<<ystart<<", "<<yend<<"]\n";
         if(k==BEST_SHOW_NUMBER)std::cout<<"...\n";
         k++;
@@ -30,10 +41,22 @@ void show_best_and_output_file(res_unit best,int xsize,int ysize){
     std::fstream fs;
     fs.open(filename_best_score_interval,std::ios::out);
     datatype score=best.score;
-    int xstart=X_FREE_START?best.xstart:1;
-    int ystart=Y_FREE_START?best.ystart:1;
-    int xend=X_FREE_END?best.xend:xsize;
-    int yend=Y_FREE_END?best.yend:ysize;
+    int xstart=1;
+    int ystart=1;
+    int xend=xsize;
+    int yend=ysize;
+#if X_FREE_START
+    xstart=best.xstart;
+#endif
+#if X_FREE_END
+    xend=best.xend;
+#endif
+#if Y_FREE_START
+    ystart=best.ystart;
+#endif
+#if Y_FREE_END
+    yend=best.yend;
+#endif
     std::cout<<"score= "<<score<<"; x=["<<xstart<<", "<<xend<<"]; y=["<<ystart<<", "<<yend<<"]\n";
     fs<<score<<" "<<xstart<<" "<<xend<<" "<<ystart<<" "<<yend<<"\n";
     fs.close();

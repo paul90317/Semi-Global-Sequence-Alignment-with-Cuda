@@ -5,8 +5,12 @@
 #include "layout.cuh"
 
 __device__ inline void update_score(res_unit& now,int xid,int yid,res_unit*best_stack,int *bs_count,datatype* best_score){
+#if X_FREE_END
     now.xend=xid;
+#endif
+#if Y_FREE_END
     now.yend=yid;
+#endif
     if(now.score>(*best_score)+BEST_DIFF){
         *bs_count=0;
     }

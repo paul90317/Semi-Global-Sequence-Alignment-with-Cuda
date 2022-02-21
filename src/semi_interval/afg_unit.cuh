@@ -5,18 +5,30 @@
 class res_unit{
 public:
     datatype score;
-    int ystart,yend;
-    int xstart,xend;
-    __all__ res_unit(datatype _score, int _xstart,int _xend,int _ystart,int _yend){
+#if Y_FREE_START
+    int ystart;
+#endif
+#if Y_FREE_END
+    int yend;
+#endif
+#if X_FREE_START
+    int xstart;
+#endif
+#if X_FREE_END
+    int xend;
+#endif
+    __all__ res_unit(){
+        score=NEG_INF;
+    }
+#if X_FREE_START&&X_FREE_END&&Y_FREE_START&&Y_FREE_END
+    __all__ res_unit(datatype _score,int _xstart,int _xend,int _ystart,int _yend){
         score=_score;
         xstart=_xstart;
         xend=_xend;
         ystart=_ystart;
         yend=_yend;
     }
-    __all__ res_unit(){
-        score=NEG_INF;
-    }
+#endif
     __all__ bool operator>(res_unit& b){
         return score>b.score;
     }
@@ -27,7 +39,7 @@ public:
         score=s;
     }
     __all__ res_unit operator+(datatype s){
-        res_unit u(score,xstart,xend,ystart,yend);
+        res_unit u=*this;
         u.score+=s;
         return u;
     }
