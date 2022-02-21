@@ -22,7 +22,7 @@ y: fixed start, fixed end, size=118436
 Pragram           | Array  | Time 
 --------------|:-----:|:----:
 cpu.exe    | - | 65.37s 
-semi_interval.exe | reduce memory of afg_unit |  11.57s
+semi_interval.exe | reduce memory of afg_unit |  1.40s
 semi_interval.exe | coalescing |  11.57s
 alignment.exe | coalescing | 24.38s
 semi_interval.exe |no coalescing |  35.58s
