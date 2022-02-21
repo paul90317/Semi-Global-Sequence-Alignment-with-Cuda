@@ -40,7 +40,7 @@ public:
     }
     __all__ res_unit operator+(datatype s){
         res_unit u=*this;
-        u.score+=s;
+        u.score=score+s;
         return u;
     }
     __all__ bool operator<=(datatype x){

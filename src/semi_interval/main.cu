@@ -139,10 +139,10 @@ int main(int argc,char** argv){
 
     //印出結果
 #if (!X_FREE_END&&!Y_FREE_END)
-    res_unit last;
-    cudaMemcpy(&last,GM+xsize,sizeof(res_unit),cudaMemcpyDeviceToHost);//last
-    std::cout<<"Best score: "<<last.score<<"\n";
-    show_best_and_output_file(last,xsize,ysize);
+    afg_unit last;
+    cudaMemcpy(&last,GM+xsize,sizeof(afg_unit),cudaMemcpyDeviceToHost);//last
+    std::cout<<"Best score: "<<last.result().score<<"\n";
+    show_best_and_output_file(last.result(),xsize,ysize);
 #elif (X_FREE_END&&Y_FREE_END)
     res_unit* cbests;
     datatype bestscore=interval_result_from_gup(&cbests,g_best_arr,xsize+1);

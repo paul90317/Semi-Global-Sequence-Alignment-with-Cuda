@@ -13,7 +13,7 @@
 #define BEST_SHOW_NUMBER 3 //指定 semi_interval.exe 顯示多少區間
 
 //比對目標
-#define DEFAULT_INTERVAL_INDEX 100 //指定 alignment.exe 對哪一條區間進行比對，從 0 開始
+#define DEFAULT_INTERVAL_INDEX 0 //指定 alignment.exe 對哪一條區間進行比對，從 0 開始
 
 //檔案
 const char filename_x[]="../res/x.txt";//序列一
