@@ -9,108 +9,22 @@
 #include "macro.cuh"
 #include "test_time.h"
 
-#if !X_FREE_END&&!Y_FREE_END
-__global__ void calculate_yfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
-#elif X_FREE_END&&Y_FREE_END
-__global__ void calculate_yfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_arr) 
+#if END_MODE==0
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
+#elif END_MODE==3
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_arr) 
 #else
-__global__ void calculate_yfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) 
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) 
 #endif
 {
-    int tid=TID;
-    int xid=tid+1;
+    int xid=TID;
     int yid=index_y-xid-1;
-    if(xid<1||yid<0||xid>xsize||yid>ysize)return;
+    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
+#if START_MODE==0
     M[xid].x=M1[xid-1].to_x();
     M[xid].y=M1[xid].to_y();
     M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
-    if(xid==1){
-        M[xid].x.ystart=yid+1;
-        M[xid].m.ystart=yid;
-    }
-#if (Y_FREE_END || X_FREE_END)
-#if (Y_FREE_END&&X_FREE_END)
-    res_unit& now=M[xid].result();
-    now.xend=xid;
-    now.yend=yid;
-    best_arr[xid]=max2(now,best_arr[xid]);
-#else
-    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
-        res_unit& now=M[xid].result();
-        update_score(now,xid,yid,best_stack,bs_count,bscore);
-    }
-#endif
-#endif
-}
-#if !X_FREE_END&&!Y_FREE_END
-__global__ void calculate_xyfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
-#elif X_FREE_END&&Y_FREE_END
-__global__ void calculate_xyfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_arr) 
-#else
-__global__ void calculate_xyfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) 
-#endif
-{
-    int xid=TID;
-    int yid=index_y-xid-1;
-    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
-    res_unit zero(0,xid+1,xid,yid+1,yid);
-    M[xid].x=max2(M1[xid-1].to_x(),zero);
-    M[xid].y=max2(M1[xid].to_y(),zero);
-    M[xid].m=max2(M2[xid-1].to_m(x[xid],y[yid]),zero);
-#if (Y_FREE_END || X_FREE_END)
-#if (Y_FREE_END&&X_FREE_END)
-    res_unit& now=M[xid].result();
-    now.xend=xid;
-    now.yend=yid;
-    best_arr[xid]=max2(now,best_arr[xid]);
-#else
-    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
-        res_unit& now=M[xid].result();
-        update_score(now,xid,yid,best_stack,bs_count,bscore);
-    }
-#endif
-#endif
-}
-
-#if !X_FREE_END&&!Y_FREE_END
-__global__ void calculate_fixedStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
-#elif X_FREE_END&&Y_FREE_END
-__global__ void calculate_fixedStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_arr) 
-#else
-__global__ void calculate_fixedStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) 
-#endif
-{
-    int xid=TID;
-    int yid=index_y-xid-1;
-    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
-    M[xid].x=M1[xid-1].to_x();
-    M[xid].y=M1[xid].to_y();
-    M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
-#if (Y_FREE_END || X_FREE_END)
-#if (Y_FREE_END&&X_FREE_END)
-    res_unit& now=M[xid].result();
-    now.xend=xid;
-    now.yend=yid;
-    best_arr[xid]=max2(now,best_arr[xid]);
-#else
-    if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
-        res_unit& now=M[xid].result();
-        update_score(now,xid,yid,best_stack,bs_count,bscore);
-    }
-#endif
-#endif
-}
-#if !X_FREE_END&&!Y_FREE_END
-__global__ void calculate_xfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
-#elif X_FREE_END&&Y_FREE_END
-__global__ void calculate_xfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_arr) 
-#else
-__global__ void calculate_xfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit* best_stack,int* bs_count,datatype* bscore) 
-#endif
-{
-    int xid=TID;
-    int yid=index_y-xid-1;
-    if(xid<0||yid<0||xid>xsize||yid>ysize)return;
+#elif START_MODE==1
     M[xid].x=M1[xid-1].to_x();
     M[xid].y=M1[xid].to_y();
     M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
@@ -121,18 +35,31 @@ __global__ void calculate_xfreeStart(afg_unit* M,afg_unit* M1,afg_unit* M2,int* 
         M[xid].m.xstart=xid;
         M[xid].y.xstart=xid+1;
     }
-#if (Y_FREE_END || X_FREE_END)
-#if (Y_FREE_END&&X_FREE_END)
+#elif START_MODE==2
+    if(xid==0)return;
+    M[xid].x=M1[xid-1].to_x();
+    M[xid].y=M1[xid].to_y();
+    M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
+    if(xid==1){
+        M[xid].x.ystart=yid+1;
+        M[xid].m.ystart=yid;
+    }
+#elif START_MODE==3
+    res_unit zero(0,xid+1,xid,yid+1,yid);
+    M[xid].x=max2(M1[xid-1].to_x(),zero);
+    M[xid].y=max2(M1[xid].to_y(),zero);
+    M[xid].m=max2(M2[xid-1].to_m(x[xid],y[yid]),zero);
+#endif
+#if END_MODE==3
     res_unit& now=M[xid].result();
     now.xend=xid;
     now.yend=yid;
     best_arr[xid]=max2(now,best_arr[xid]);
-#else
+#elif END_MODE>0
     if(xid==xsize&&Y_FREE_END||yid==ysize&&X_FREE_END){
         res_unit& now=M[xid].result();
         update_score(now,xid,yid,best_stack,bs_count,bscore);
     }
-#endif
 #endif
 }
 
@@ -186,68 +113,30 @@ int main(int argc,char** argv){
     GM++;
     GM1++;
     GM2++;
-
-    
-
-    //分支
-    time_start();
-#if (START_MODE==2)
     M[0].m=0;
     M1[0].m=0;
     M2[0].m=0;
     cudaMemcpy(GM-1, M-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
     cudaMemcpy(GM1-1, M1-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
     cudaMemcpy(GM2-1, M2-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-    thread_assign(xsize,&nblock,&nthread);
-    for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
-        #if (!X_FREE_END&&!Y_FREE_END)
-            calculate_yfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize);
-        #elif (X_FREE_END&&Y_FREE_END)
-            calculate_yfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_arr);
-        #else
-            calculate_yfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
-        #endif
-        cudaMemcpy(GM2+1,GM1+1,sizeof(afg_unit)*xsize,cudaMemcpyDeviceToDevice);
-        cudaMemcpy(GM1+1,GM+1,sizeof(afg_unit)*xsize,cudaMemcpyDeviceToDevice);
-    }
-#else
-    M1[0].m=0;
-    cudaMemcpy(GM-1, M-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-    cudaMemcpy(GM1-1, M1-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
-    cudaMemcpy(GM2-1, M2-1, (xsize+2)*sizeof(afg_unit), cudaMemcpyHostToDevice);
     thread_assign(xsize+1,&nblock,&nthread);
+
+    //分支
+    time_start();
     for(int idy=2;Y_NOT_END(idy,xsize,ysize);idy++){
-    #if (START_MODE==0)
-        #if (!X_FREE_END&&!Y_FREE_END)
-            calculate_fixedStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize);
-        #elif (X_FREE_END&&Y_FREE_END)
-            calculate_fixedStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_arr);
+        #if (END_MODE==0)
+            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize);
+        #elif (END_MODE==3)
+            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_arr);
         #else
-            calculate_fixedStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
+            calculate<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
         #endif
-    #elif (START_MODE==1)
-        #if (!X_FREE_END&&!Y_FREE_END)
-            calculate_xfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize);
-        #elif (X_FREE_END&&Y_FREE_END)
-            calculate_xfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_arr);
-        #else
-            calculate_xfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
-        #endif
-    #elif (START_MODE==3)
-        #if (!X_FREE_END&&!Y_FREE_END)
-            calculate_xyfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize);
-        #elif (X_FREE_END&&Y_FREE_END)
-            calculate_xyfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_arr);
-        #else
-            calculate_xyfreeStart<<<nblock,nthread>>>(GM,GM1,GM2,gx_int,gy_int,idy,xsize,ysize,g_best_stack,g_bs_count,g_best_score);
-        #endif
-    #endif
         cudaMemcpy(GM2,GM1,sizeof(afg_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
         cudaMemcpy(GM1,GM,sizeof(afg_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
     }
-#endif
     time_end();
     std::cout<<"Best interval saved in: "<<filename_best_score_interval<<"\n\n";
+
     //印出結果
 #if (!X_FREE_END&&!Y_FREE_END)
     res_unit last;
