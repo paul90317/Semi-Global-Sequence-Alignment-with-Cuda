@@ -23,6 +23,7 @@ __device__ inline void update_score(res_unit& now,int xid,int yid,res_unit*best_
 
 #define Y_NOT_END(idy,xsize,ysize) (((idy)-(xsize)-1)<=(ysize))
 #define START_MODE (X_FREE_START+Y_FREE_START*2)
+#define END_MODE (X_FREE_END+Y_FREE_END*2)
 
 template<typename T>
 void assign_single(T* g_dst,T c_value){
