@@ -22,10 +22,10 @@ const char filename_best_score_interval[]="../res/best.txt";//區間結果儲存
 const char filename_alignment[]="../res/alignment.txt";//sequence alignment 結果
 
 //semi 設定
-#define X_FREE_START false
-#define Y_FREE_START false
-#define X_FREE_END false
-#define Y_FREE_END false
+#define X_FREE_START true
+#define Y_FREE_START true
+#define X_FREE_END true
+#define Y_FREE_END true
 
 //分數設定
 typedef int datatype;//分數資料型態可改 double 或 int
