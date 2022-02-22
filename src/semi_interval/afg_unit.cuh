@@ -8,14 +8,8 @@ public:
 #if Y_FREE_START
     int ystart;
 #endif
-#if Y_FREE_END
-    int yend;
-#endif
 #if X_FREE_START
     int xstart;
-#endif
-#if X_FREE_END
-    int xend;
 #endif
     __all__ res_unit(){
         score=NEG_INF;
@@ -24,9 +18,7 @@ public:
     __all__ res_unit(datatype _score,int _xstart,int _xend,int _ystart,int _yend){
         score=_score;
         xstart=_xstart;
-        xend=_xend;
         ystart=_ystart;
-        yend=_yend;
     }
 #endif
     __all__ bool operator>(res_unit& b){
@@ -48,6 +40,12 @@ public:
     }
 };
 
+class res_unit_end:res_unit{
+public:
+    int xend;
+    int yend;
+}
+
 class afg_unit{
 public:
     res_unit m,x,y;
@@ -65,7 +63,6 @@ public:
     __all__ res_unit& result(){
         return max3(m,x,y);
     }
-
 };
 
 #endif
