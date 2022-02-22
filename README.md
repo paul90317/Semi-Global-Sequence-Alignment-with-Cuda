@@ -19,7 +19,7 @@ And I also make #if to let memory of afg_unit reduce, the improve is crazy.
 x: fixed start, fixed end, size= 16641
 y: fixed start, fixed end, size=118436
 ```
-Pragram           | Array  | Time 
+Pragram           | Branch  | Time 
 --------------|:-----:|:----:
 cpu.exe    | - | 65.37s 
 semi_interval.exe | reduce memory of afg_unit |  1.40s
@@ -27,6 +27,14 @@ semi_interval.exe | coalescing |  11.57s
 alignment.exe | coalescing | 24.38s
 semi_interval.exe |no coalescing |  35.58s
 alignment.exe |no coalescing | 40.35s
+
+x start | x end | y start | y end |Time
+:-----:|:-----:|:-----:|:-----:|:-----:
+fixed|fixed|fixed|fixed|1.54s
+free|free|fixed|fixed|4.14s
+fixed|fixed|free|free|4.13s
+free|free|free|free|7.07s
+
 ## Test  
 ### enviroment 
 **`OS`** `win10`  
