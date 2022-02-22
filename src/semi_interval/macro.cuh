@@ -4,13 +4,7 @@
 #include "afg_unit.cuh"
 #include "layout.cuh"
 
-__device__ inline void update_score(res_unit& now,int xid,int yid,res_unit*best_stack,int *bs_count,datatype* best_score){
-#if X_FREE_END
-    now.xend=xid;
-#endif
-#if Y_FREE_END
-    now.yend=yid;
-#endif
+__device__ inline void update_score(res_unit_end& now,res_unit_end*best_stack,int *bs_count,datatype* best_score){
     if(now.score>(*best_score)+BEST_DIFF){
         *bs_count=0;
     }
@@ -34,14 +28,13 @@ void assign_single(T* g_dst,T c_value){
     cudaMemcpy(g_dst,&c_value,sizeof(T),cudaMemcpyHostToDevice);
 }
 namespace protected_space{
-    template<typename T>
-    __global__ void _assign_arr(T* g_arr,T value,int count){
+    __global__ void _assign_arr(res_unit_end* g_arr,datatype value,int count){
         int tid=TID;
-        if(tid<count)g_arr[tid]=value;
+        if(tid<count)g_arr[tid].score=value;
     }
 }
-template<typename T>
-inline void assign_arr(T* g_arr,T value,int count){
+
+inline void assign_arr(res_unit_end* g_arr,datatype value,int count){
     int nb,nt;
     thread_assign(count,&nb,&nt);
     protected_space::_assign_arr _kernel(nb,nt)(g_arr,value,count);

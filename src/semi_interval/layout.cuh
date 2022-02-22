@@ -5,12 +5,12 @@
 #include <fstream>
 #include <cstdlib>
 
-void show_best_and_output_file(res_unit* bests,int count,int xsize,int ysize,datatype best_score){
+void show_best_and_output_file(res_unit_end* bests,int count,int xsize,int ysize,datatype best_score){
     std::fstream fs;
     fs.open(filename_best_score_interval,std::ios::out);
     int k=0;
     for(int i=0;i<count;i++){
-        res_unit best=bests[i];
+        res_unit_end best=bests[i];
         datatype score=best.score;
         if(score<best_score-BEST_DIFF)continue;
         int xstart=1;
@@ -37,7 +37,7 @@ void show_best_and_output_file(res_unit* bests,int count,int xsize,int ysize,dat
     }
     fs.close();
 }
-void show_best_and_output_file(res_unit best,int xsize,int ysize){
+void show_best_and_output_file(res_unit_end best,int xsize,int ysize){
     std::fstream fs;
     fs.open(filename_best_score_interval,std::ios::out);
     datatype score=best.score;
@@ -62,17 +62,17 @@ void show_best_and_output_file(res_unit best,int xsize,int ysize){
     fs.close();
 }
 
-int interval_result_from_gup(res_unit** C_dst,res_unit* G_src,int* G_sz){
+int interval_result_from_gup(res_unit_end** C_dst,res_unit_end* G_src,int* G_sz){
     int csize;
     cudaMemcpy(&csize,G_sz,sizeof(int),cudaMemcpyDeviceToHost);
-    *C_dst=(res_unit*)malloc(sizeof(res_unit)*(csize));
-    cudaMemcpy(*C_dst,G_src,sizeof(res_unit)*(csize),cudaMemcpyDeviceToHost);
+    *C_dst=(res_unit_end*)malloc(sizeof(res_unit_end)*(csize));
+    cudaMemcpy(*C_dst,G_src,sizeof(res_unit_end)*(csize),cudaMemcpyDeviceToHost);
     return csize;
 }
 
-datatype interval_result_from_gup(res_unit** C_dst,res_unit* G_src,int count){
-    *C_dst=(res_unit*)malloc(sizeof(res_unit)*count);
-    cudaMemcpy(*C_dst,G_src,sizeof(res_unit)*count,cudaMemcpyDeviceToHost);
+datatype interval_result_from_gup(res_unit_end** C_dst,res_unit_end* G_src,int count){
+    *C_dst=(res_unit_end*)malloc(sizeof(res_unit_end)*count);
+    cudaMemcpy(*C_dst,G_src,sizeof(res_unit_end)*count,cudaMemcpyDeviceToHost);
     datatype best=NEG_INF;
     for(int i=0;i<count;i++){
         best=max2(best,(*C_dst)[i].score);
