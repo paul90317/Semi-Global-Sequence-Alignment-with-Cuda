@@ -27,9 +27,9 @@ __global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,int* gx,i
     if((xid<ZERO(xl))||(yid<ZERO(yl))||(xid>xr)||(yid>yr))return;
     int _x=gx[xid];
     int _y=gy[yid];
-    GM[xid].x=GM1[xid-1].to_x(tid,_x);
-    GM[xid].y=GM1[xid].to_y(tid,_y);
-    GM[xid].m=GM2[xid-1].to_m(tid,_x,_y);
+    GM[tid].x=GM1[tid-1].to_x(tid,_x);
+    GM[tid].y=GM1[tid].to_y(tid,_y);
+    GM[tid].m=GM2[tid-1].to_m(tid,_x,_y);
 }
 
 class alm_controller{
@@ -37,18 +37,17 @@ private:
     alm_unit *GM,*GM1,*GM2;
     int *gx,*gy;
     __host__ void initM(int l,int r,bool xbackgap){
-        int initx=ZERO(l)-1;
         int cnt=r-l+3;
         alm_unit au;
-        alm_assign(GM+initx,au,cnt);
-        alm_assign(GM1+initx,au,cnt);
-        alm_assign(GM2+initx,au,cnt);
+        alm_assign(GM-1,au,cnt);
+        alm_assign(GM1-1,au,cnt);
+        alm_assign(GM2-1,au,cnt);
         if(xbackgap){
             au.y.score=0;
         }else{
             au.m.score=0;
         }
-        alm_assign(GM1+ZERO(l),au,1);
+        alm_assign(GM1,au,1);
     }
     __host__ void dp(int xl,int xr,int yl,int yr,bool xbackgap){
         mem_controller::clear();
@@ -58,16 +57,16 @@ private:
         thread_assign(xsize+1,&nb,&nt);
         for(int ymover=ZERO(yl)+2;Y_NOT_END(ymover,xsize,yr);ymover++){
             calculate _kernel(nb,nt)(GM,GM1,GM2,gx,gy,xl,xr,yl,yr,ymover);
-            cudaMemcpy(GM2+ZERO(xl),GM1+ZERO(xl),sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
-            cudaMemcpy(GM1+ZERO(xl),GM+ZERO(xl),sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
+            cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
+            cudaMemcpy(GM1,GM,sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
         }
     }
 public:
     __host__ alm_controller(){};
-    __host__ alm_controller(int*_gx,int*_gy,int _xsize){
-        cudaMalloc(&GM, (_xsize+2)*sizeof(alm_unit));
-        cudaMalloc(&GM1, (_xsize+2)*sizeof(alm_unit));
-        cudaMalloc(&GM2, (_xsize+2)*sizeof(alm_unit));
+    __host__ alm_controller(int*_gx,int*_gy){
+        cudaMalloc(&GM, (ALM_END_POINT_SIZE+1)*sizeof(alm_unit));
+        cudaMalloc(&GM1, (ALM_END_POINT_SIZE+1)*sizeof(alm_unit));
+        cudaMalloc(&GM2, (ALM_END_POINT_SIZE+1)*sizeof(alm_unit));
         GM++;
         GM1++;
         GM2++;
@@ -77,7 +76,7 @@ public:
     __host__ alm_head get_alm(int xl,int xr,int yl,int yr,bool xbackgap){
         dp(xl,xr,yl,yr,xbackgap);
         alm_unit a;
-        cudaMemcpy(&a, GM+xr, sizeof(alm_unit),cudaMemcpyDeviceToHost);
+        cudaMemcpy(&a, GM+xr-xl+1, sizeof(alm_unit),cudaMemcpyDeviceToHost);
         return a.result();
     }
 };

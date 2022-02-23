@@ -86,7 +86,7 @@ int main(int argc,char** argv){
 
     //運算
     dfs::afg_c=afg_controller(gx,gy,xsz);
-    dfs::alm_c=alm_controller(gx,gy,xsz);
+    dfs::alm_c=alm_controller(gx,gy);
     dfs::file=fopen(filename_alignment,"w");
     time_start();
     dfs::dfs(1,xsz,1,ysz,false);
