@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 //GPU 計算參數
-#define THREAD_SIZE 32 //最大 1024，最小 1
+#define THREAD_SIZE 128 //最大 1024，最小 1
 
 //最佳區間的儲存設定
 #define BEST_STACK_SIZE 1000 //能儲存的最好解的最大值(最小1)，
@@ -22,10 +22,10 @@ const char filename_best_score_interval[]="../res/best.txt";//區間結果儲存
 const char filename_alignment[]="../res/alignment.txt";//sequence alignment 結果
 
 //semi 設定
-#define X_FREE_START true
-#define Y_FREE_START true
-#define X_FREE_END true
-#define Y_FREE_END true
+#define X_FREE_START false
+#define Y_FREE_START false
+#define X_FREE_END false
+#define Y_FREE_END false
 
 //分數設定
 typedef int datatype;//分數資料型態可改 double 或 int
@@ -45,5 +45,9 @@ namespace protected_space{
         {NEG_INF,-1,-1,-1,1},
     };
 }
+
+//alignment 中斷點設定
+#define ALM_END_POINT_SIZE 3200
+#define ALM_MEM_STACK_SIZE 160000//每個 thread 最多可存幾個 node
 
 #endif

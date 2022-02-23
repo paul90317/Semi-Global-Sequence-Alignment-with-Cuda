@@ -6,7 +6,7 @@
 #include "utils.cuh"
 #include "macro.cuh"
 
-__global__ void calculate(afg_unit*GM,afg_unit*GM1,afg_unit*GM2,int* gx,int* gy,int xl,int xr,int yl,int yr,int ymover,int ymid) {
+__global__ static void calculate(afg_unit*GM,afg_unit*GM1,afg_unit*GM2,int* gx,int* gy,int xl,int xr,int yl,int yr,int ymover,int ymid) {
     int tid=TID;
     int xid=tid+ZERO(xl);
     int yid=ymover-tid-1;
@@ -59,6 +59,8 @@ public:
         cudaMalloc(&GM1, (_xsize+2)*sizeof(afg_unit));
         cudaMalloc(&GM2, (_xsize+2)*sizeof(afg_unit));
         GM++;
+        GM1++;
+        GM2++;
         gx=_gx;
         gy=_gy;
     }
