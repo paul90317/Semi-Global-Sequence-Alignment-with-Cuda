@@ -63,4 +63,15 @@ __host__ int thread_assign(int size,int* nblock,int*nthread){
     *nblock=(size/THREAD_SIZE)+((size%THREAD_SIZE)>0);
     return (*nblock)*(*nthread);
 }
+
+namespace protected_space{
+    __global__ void _addr_assign(void** dst,void* value){
+        *dst=value;
+    }
+}
+
+inline void addr_assign(void** gdst,void* gvalue){
+    int nb,nt;
+    protected_space::_addr_assign _single(gdst,gvalue);
+}
 #endif
