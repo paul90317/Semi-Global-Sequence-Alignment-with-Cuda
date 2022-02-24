@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 //GPU 計算參數
-#define THREAD_SIZE 128 //最大 1024，最小 1
+#define THREAD_SIZE 256 //最大 1024，最小 1
 
 //最佳區間的儲存設定
 #define BEST_STACK_SIZE 1000 //能儲存的最好解的最大值(最小1)，
@@ -47,7 +47,6 @@ namespace protected_space{
 }
 
 //alignment 中斷點設定
-#define ALM_END_POINT_SIZE 3200
-#define ALM_MEM_STACK_SIZE 160000//每個 thread 最多可存幾個 node
+#define ALM_END_POINT_SIZE 30000
 
 #endif

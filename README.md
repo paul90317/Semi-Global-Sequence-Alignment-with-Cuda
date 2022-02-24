@@ -38,7 +38,8 @@ alignment.exe | coalescing | 24.38s
 semi_interval.exe |no coalescing |  35.58s
 alignment.exe |no coalescing | 40.35s
 alignment.exe |end point 2D alignment |17.28s
-
+alignment.exe | trace back end point (30000x30000)|11.67s
+***`semi_interval.exe`***  
 x start | x end | y start | y end |Time
 :-----:|:-----:|:-----:|:-----:|:-----:
 fixed|fixed|fixed|fixed|1.54s
@@ -86,7 +87,7 @@ Load semi interval from ../res/best.txt , Index=0, Score=-90273
 X sequence: ../res/x.txt , Semi interval=[1, 16641]
 Y sequence: ../res/y.txt , Semi interval=[1, 118436]
 
-Time taken: 17.28s
+Time taken: 11.67s
 Best score: -90273
 The score of alignment ../res/alignment.txt is -90273
 ```

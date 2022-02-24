@@ -30,8 +30,7 @@ namespace dfs{
             return;
         }
         if(xs<ALM_END_POINT_SIZE&&ys<ALM_END_POINT_SIZE){
-            alm_head ah=alm_c.get_alm(xl,xr,yl,yr,xgap);
-            ah.output(file);
+            bscore=alm_c.cal_out_trace_back(file,xl,xr,yl,yr,xgap);
             return;
         }
         int ymid=(yl+yr)/2;
@@ -86,7 +85,7 @@ int main(int argc,char** argv){
 
     //運算
     dfs::afg_c=afg_controller(gx,gy,xsz);
-    dfs::alm_c=alm_controller(gx,gy);
+    dfs::alm_c=alm_controller(gx,gy,dfs::x_int,dfs::y_int);
     dfs::file=fopen(filename_alignment,"w");
     time_start();
     dfs::dfs(1,xsz,1,ysz,false);
