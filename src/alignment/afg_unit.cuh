@@ -41,8 +41,8 @@ class afg_unit{
 public:
     res_unit m,x,y;
     
-    __device__ res_unit to_m(int i,int j){
-        return max3(m,x,y)+protected_space::gscore_matrix[CHAR_NUMBER*i+j];
+    __device__ res_unit to_m(byte _x,byte _y){
+        return max3(m,x,y)+protected_space::gscore_matrix[CHAR_NUMBER*_x+_y];
     }
     __all__ res_unit to_x(){// y have gap, mean x move
         return max3(m+SCORE_G,x+SCORE_E,y+SCORE_G);
