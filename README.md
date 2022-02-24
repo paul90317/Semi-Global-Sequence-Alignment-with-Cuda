@@ -39,7 +39,9 @@ semi_interval.exe |no coalescing |  35.58s
 alignment.exe |no coalescing | 40.35s
 alignment.exe |end point 2D alignment |17.28s
 alignment.exe | trace back end point (30000x30000)|11.67s
+
 ***`semi_interval.exe`***  
+
 x start | x end | y start | y end |Time
 :-----:|:-----:|:-----:|:-----:|:-----:
 fixed|fixed|fixed|fixed|1.54s
