@@ -14,9 +14,9 @@ char my_get_ch(FILE* file){
     }
 }
 
-bool check_alm(int* x,int* y,datatype* alm_score){
+bool check_alm(byte* x,byte* y,datatype* alm_score){
     char a,b;
-    int i,j;
+    byte _x,_y;
     int xid=1,yid=1;
     FILE* file;
     file=fopen(filename_alignment,"r");
@@ -26,35 +26,35 @@ bool check_alm(int* x,int* y,datatype* alm_score){
         a=my_get_ch(file);
         if(a==EOF)break;
         b=my_get_ch(file);
-        i=mapping_Char(a);
-        j=mapping_Char(b);
-        if(i==0){
+        _x=mapping_Char(a);
+        _y=mapping_Char(b);
+        if(_x==0){
             if(state!=1){
                 score+=SCORE_G;
                 state=1;
             }else{
                 score+=SCORE_E;
             }
-            if(j!=y[yid++]){
+            if(_y!=y[yid++]){
                 return false;
             }
-        }else if(j==0){
+        }else if(_y==0){
             if(state!=2){
                 score+=SCORE_G;
                 state=2;
             }else{
                 score+=SCORE_E;
             }
-            if(i!=x[xid++]){
+            if(_x!=x[xid++]){
                 return false;
             }
         }else{
             state=0;
-            score+=protected_space::score_matrix[i][j];
-            if(i!=x[xid++]){
+            score+=protected_space::score_matrix[_x][_y];
+            if(_x!=x[xid++]){
                 return false;
             }
-            if(j!=y[yid++]){
+            if(_y!=y[yid++]){
                 return false;
             }
         }

@@ -10,15 +10,40 @@ enum pointer:byte{
 };
 class trace_unit{
 public:
-    pointer m,x,y;
+    byte storage;
+    //pointer m,x,y;
     __all__ trace_unit(){}
     pointer next(pointer from){
         switch(from){
-        case pointer::tom:return m;
-        case pointer::tox:return x;
-        case pointer::toy:return y;
+        case pointer::tom:return get_m();
+        case pointer::tox:return get_x();
+        case pointer::toy:return get_y();
         }
         return pointer::none;
+    }
+    __all__ void set_m(pointer p){
+        storage&=0b11001111;
+        storage|=p<<4;
+    }
+    __all__ void set_x(pointer p){
+        storage&=0b11110011;
+        storage|=p<<2;
+    }
+    __all__ void set_y(pointer p){
+        storage&=0b11111100;
+        storage|=p;
+    }
+    __all__ pointer get_m(){
+        byte tmp=storage>>4;
+        return (pointer)(tmp&0b00000011);
+    }
+    __all__ pointer get_x(){
+        byte tmp=storage>>2;
+        return (pointer)(tmp&0b00000011);
+    }
+    __all__ pointer get_y(){
+        byte tmp=storage>>0;
+        return (pointer)(tmp&0b00000011);
     }
 };
 class alm_unit{
@@ -29,48 +54,48 @@ public:
         x=NEG_INF;
         y=NEG_INF;
     }
-    __device__ datatype to_m(int _x,int _y,pointer* from){
+    __device__ datatype to_m(int _x,int _y,trace_unit *from){
         datatype ret;
         if(m>x&&m>y){
-            *from=pointer::tom;
+            from->set_m(pointer::tom);
             ret= m;
         }else if(x>y){
-            *from=pointer::tox;
+            from->set_m(pointer::tox);
             ret= x;
         }else{
-            *from=pointer::toy;
+            from->set_m(pointer::toy);
             ret=y;
         }
         return ret+protected_space::gscore_matrix[CHAR_NUMBER*_x+_y];
     }
-    __all__ datatype to_x(pointer* from){
+    __all__ datatype to_x(trace_unit *from){
         datatype _m=m+SCORE_G;
         datatype _x=x+SCORE_E;
         datatype _y=y+SCORE_G;
         if(_m>_x&&_m>_y){
-            *from=pointer::tom;
+            from->set_x(pointer::tom);
             return _m;
         }
         if(_x>_y){
-            *from=pointer::tox;
+            from->set_x(pointer::tox);
             return _x;
         }
-        *from=pointer::toy;
+        from->set_x(pointer::toy);
         return _y;
     }
-    __all__ datatype to_y(pointer* from){
+    __all__ datatype to_y(trace_unit *from){
         datatype _m=m+SCORE_G;
         datatype _x=x+SCORE_G;
         datatype _y=y+SCORE_E;
         if(_m>_x&&_m>_y){
-            *from=pointer::tom;
+            from->set_y(pointer::tom);
             return _m;
         }
         if(_x>_y){
-            *from=pointer::tox;
+            from->set_y(pointer::tox);
             return _x;
         }
-        *from=pointer::toy;
+        from->set_y(pointer::toy);
         return _y;
     }
     __all__ datatype result(){

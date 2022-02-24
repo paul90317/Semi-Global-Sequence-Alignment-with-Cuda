@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include "afg_controller.cuh"
-#include "file_sys.cuh"
+#include "file.cuh"
 #include "test_time.h"
 #include "check_alm.h"
 #include "alm_controller/alm_controller.cuh"
@@ -10,7 +10,7 @@
 #define THREAD_SIZE 1024
 
 namespace dfs{
-    int *x_int,*y_int;
+    byte *x_int,*y_int;
     FILE* file;
     afg_controller afg_c;
     alm_controller alm_c;
@@ -51,7 +51,7 @@ namespace dfs{
 
 
 int main(int argc,char** argv){
-    int *gx,*gy;
+    byte *gx,*gy;
 
     //common
     gscore_matrix_load();

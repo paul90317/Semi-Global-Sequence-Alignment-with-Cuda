@@ -32,17 +32,17 @@ static inline void alm_assign(alm_unit* garr,alm_unit value,int count){
     protected_space::_alm_assign _kernel(nb,nt)(garr,value,count);
 }
 
-__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,int* gx,int* gy,int xl,int xr,int yl,int yr,int ymover,trace_unit* trace) {
+__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,byte* gx,byte* gy,int xl,int xr,int yl,int yr,int ymover,trace_unit* trace) {
     int tid=TID;
     int xid=tid+ZERO(xl);
     int yid=ymover-tid-1;
     if((xid<ZERO(xl))||(yid<ZERO(yl))||(xid>xr)||(yid>yr))return;
-    int _x=gx[xid];
-    int _y=gy[yid];
+    byte _x=gx[xid];
+    byte _y=gy[yid];
     trace_unit tu;
-    GM[tid].x=GM1[tid-1].to_x(&tu.x);
-    GM[tid].y=GM1[tid].to_y(&tu.y);
-    GM[tid].m=GM2[tid-1].to_m(_x,_y,&tu.m);
+    GM[tid].x=GM1[tid-1].to_x(&tu);
+    GM[tid].y=GM1[tid].to_y(&tu);
+    GM[tid].m=GM2[tid-1].to_m(_x,_y,&tu);
     trace[dimcf(tid,yid-ZERO(yl))]=tu;
 }
 
@@ -50,7 +50,7 @@ class alm_controller{
 private:
     alm_unit *GM,*GM1,*GM2;
     trace_unit *gtrace_back,*ctrace_back;
-    int *gx,*gy,*cx,*cy;
+    byte *gx,*gy,*cx,*cy;
     __host__ void initM(int l,int r,bool xbackgap){
         int cnt=r-l+3;
         alm_unit au;
@@ -77,7 +77,7 @@ private:
     }
 public:
     __host__ alm_controller(){};
-    __host__ alm_controller(int*_gx,int*_gy,int* _cx,int* _cy){
+    __host__ alm_controller(byte*_gx,byte*_gy,byte* _cx,byte* _cy){
         int len=(ALM_END_POINT_SIZE+1);
         cudaMalloc(&GM, len*sizeof(alm_unit));
         cudaMalloc(&GM1, len*sizeof(alm_unit));

@@ -47,6 +47,6 @@ namespace protected_space{
 }
 
 //alignment 中斷點設定
-#define ALM_END_POINT_SIZE 30000
+#define ALM_END_POINT_SIZE 60000ui64
 
 #endif

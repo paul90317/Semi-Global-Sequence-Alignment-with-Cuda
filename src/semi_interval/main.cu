@@ -10,11 +10,11 @@
 #include "test_time.h"
 
 #if END_MODE==0
-__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize)
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,int index_y,int xsize,int ysize)
 #elif END_MODE==3
-__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit_end* best_arr) 
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,int index_y,int xsize,int ysize,res_unit_end* best_arr) 
 #else
-__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,int index_y,int xsize,int ysize,res_unit_end* best_stack,int* bs_count,datatype* bscore) 
+__global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,int index_y,int xsize,int ysize,res_unit_end* best_stack,int* bs_count,datatype* bscore) 
 #endif
 {
     int xid=TID;
@@ -62,7 +62,7 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,int* x,int* y,in
 }
 
 int main(int argc,char** argv){
-    int *gx_int,*gy_int;
+    byte *gx_int,*gy_int;
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
     int xsize,ysize;
     int nthread,nblock;
