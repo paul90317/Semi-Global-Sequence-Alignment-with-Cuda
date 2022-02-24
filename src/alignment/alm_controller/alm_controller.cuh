@@ -49,7 +49,7 @@ __global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,byte* gx,
 class alm_controller{
 private:
     alm_unit *GM,*GM1,*GM2;
-    trace_unit *gtrace_back;
+    trace_unit *gtrace_back,*ctrace_back;
     byte *gx,*gy,*cx,*cy;
     __host__ void initM(int l,int r,bool xbackgap){
         int cnt=r-l+3;
@@ -83,6 +83,7 @@ public:
         cudaMalloc(&GM1, len*sizeof(alm_unit));
         cudaMalloc(&GM2, len*sizeof(alm_unit));
         cudaMalloc(&gtrace_back,ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit));
+        ctrace_back=(trace_unit*)malloc(ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit));
         GM++;
         GM1++;
         GM2++;
@@ -93,6 +94,7 @@ public:
     }
     __host__ datatype cal_out_trace_back(FILE* file,int xl,int xr,int yl,int yr,bool xbackgap){
         dp(xl,xr,yl,yr,xbackgap);
+        cudaMemcpy(ctrace_back,gtrace_back,ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit),cudaMemcpyDeviceToHost);
         int xsz=xr-xl+1;
         int ysz=yr-yl+1;
         pointer now,next;
@@ -103,10 +105,9 @@ public:
         int j=ysz;
         char _x,_y;
         std::stack<cpair> st;
-        trace_unit ctu;
         while(i||j){
-            cudaMemcpy(&ctu,gtrace_back+dimcf(i,j),sizeof(trace_unit),cudaMemcpyDeviceToHost);
-            next=ctu.next(now);
+            next=ctrace_back[dimcf(i,j)].next(now);
+            //std::cout<<now<<next<<"\n";
             switch(now){
             case pointer::tom:
                 _x=to_Char(cx[(i--)+ZERO(xl)]);
@@ -121,6 +122,7 @@ public:
                 _y=to_Char(cy[(j--)+ZERO(yl)]);
                 break;
             }
+            //std::cout<<_x<<_y<<"\n";
             now=next;
             st.push(cpair(_x,_y));
         }
@@ -129,6 +131,18 @@ public:
             st.pop();
             print_alm(file,cp.x,cp.y);
         }
+        /*for(int i=0;i<=xsz;i++){
+            for(int j=0;j<=ysz;j++){
+                trace_unit tu=ctrace_back[dimcf(i,j)];
+                std::cout<<tu.m<<tu.y<<" ";
+            }
+            std::cout<<"\n";
+            for(int j=0;j<=ysz;j++){
+                trace_unit tu=ctrace_back[dimcf(i,j)];
+                std::cout<<tu.x<<"  ";
+            }
+            std::cout<<"\n";
+        }*/
         return ret;
     }   
 };
