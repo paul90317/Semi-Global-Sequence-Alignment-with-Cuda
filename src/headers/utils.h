@@ -5,6 +5,7 @@
 #define max2(a,b) (((a)>(b))?(a):(b))
 #define max3(a,b,c) max2((a),(max2((b),(c))))
 typedef unsigned char byte;
+typedef long long unsigned size_2D;
 template<typename T>
 T* oalloc(int count){
     return (T*)malloc(count*sizeof(T));
