@@ -1,3 +1,5 @@
+#define CPU
+
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -29,8 +31,17 @@ int* load_file(int* size,const char* filename){
 int main(int argc,char** argv){
     int *x,*y;
     int xsize,ysize;
-    x=load_file(&xsize,filename_x);
-    y=load_file(&ysize,filename_y);
+    if(argc!=4){
+        std::cout<<"follow format cpu.exe [x.txt] [y.txt] [score.txt]\n";
+    }
+    if(!score::load(argv[3])){
+        std::cout<<"can't load score matrix in "<<argv[3]<<"\n";
+        exit(0);
+    }else{
+        std::cout<<"loaded score matrix in "<<argv[3]<<"\n";
+    }
+    x=load_file(&xsize,argv[1]);
+    y=load_file(&ysize,argv[2]);
     if(!x||!y){
         std::cout<<"can't open file.\n";
         return 0;

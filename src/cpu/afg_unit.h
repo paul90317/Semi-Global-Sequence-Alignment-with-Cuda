@@ -15,13 +15,13 @@ public:
         y=NEG_INF;
     }
     datatype to_m(int i,int j){
-        return max3(m,x,y)+protected_space::score_matrix[i][j];
+        return max3(m,x,y)+score::score_matrix[i*score::n_host+j];
     }
     datatype to_x(){// y have gap, mean x move
-        return max3(m+SCORE_G,x+SCORE_E,y+SCORE_G);
+        return max3(m+score::g_host,x+score::e_host,y+score::g_host);
     }
     datatype to_y(){// x have gap, mean y move
-        return max3(m+SCORE_G,x+SCORE_G,y+SCORE_E);
+        return max3(m+score::g_host,x+score::g_host,y+score::e_host);
     }
 
     datatype result(){

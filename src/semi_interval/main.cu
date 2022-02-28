@@ -66,12 +66,17 @@ int main(int argc,char** argv){
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
     int xsize,ysize;
     int nthread,nblock;
-    if(argc!=4){
-        std::cout<<"follow format: semi_interval.exe [x.txt] [t.txt] [best interval.txt]\n";
+    if(argc!=5){
+        std::cout<<"follow format: semi_interval.exe [x.txt] [t.txt] [best interval.txt] [score.txt]\n";
         return 0;
     }
     //common
-    gscore_matrix_load();
+    if(!score::load(argv[4])){
+        std::cout<<"can't load score matrix in "<<argv[4]<<"\n";
+        exit(0);
+    }else{
+        std::cout<<"loaded score matrix in "<<argv[4]<<"\n";
+    }
 
     //讀取
     if(!load_file(&gx_int,&xsize,argv[1])){

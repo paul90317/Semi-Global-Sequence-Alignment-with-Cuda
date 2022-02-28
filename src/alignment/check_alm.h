@@ -30,27 +30,27 @@ bool check_alm(char* filename,byte* x,byte* y,datatype* alm_score){
         _y=mapping_Char(b);
         if(_x==0){
             if(state!=1){
-                score+=SCORE_G;
+                score+=score::g_host;
                 state=1;
             }else{
-                score+=SCORE_E;
+                score+=score::e_host;
             }
             if(_y!=y[yid++]){
                 return false;
             }
         }else if(_y==0){
             if(state!=2){
-                score+=SCORE_G;
+                score+=score::g_host;
                 state=2;
             }else{
-                score+=SCORE_E;
+                score+=score::e_host;
             }
             if(_x!=x[xid++]){
                 return false;
             }
         }else{
             state=0;
-            score+=protected_space::score_matrix[_x][_y];
+            score+=score::score_matrix[_x*score::n_host+_y];
             if(_x!=x[xid++]){
                 return false;
             }

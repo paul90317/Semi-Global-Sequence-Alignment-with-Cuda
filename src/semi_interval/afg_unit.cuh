@@ -88,13 +88,13 @@ public:
     res_unit m,x,y;
     
     __device__ res_unit to_m(int i,int j){
-        return max3(m,x,y)+protected_space::gscore_matrix[CHAR_NUMBER*i+j];
+        return max3(m,x,y)+score::gscore_matrix[score::n_device*i+j];
     }
-    __all__ res_unit to_x(){// y have gap, mean x move
-        return max3(m+SCORE_G,x+SCORE_E,y+SCORE_G);
+    __device__ res_unit to_x(){// y have gap, mean x move
+        return max3(m+score::g_device,x+score::e_device,y+score::g_device);
     }
-    __all__ res_unit to_y(){// x have gap, mean y move
-        return max3(m+SCORE_G,x+SCORE_G,y+SCORE_E);
+    __device__ res_unit to_y(){// x have gap, mean y move
+        return max3(m+score::g_device,x+score::g_device,y+score::e_device);
     }
 
     __all__ res_unit& result(){

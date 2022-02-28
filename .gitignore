@@ -13,3 +13,4 @@
 res/
 .vscode/
 out/
+__pycache__/

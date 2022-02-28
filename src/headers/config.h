@@ -1,5 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
+#include <vector>
+
 
 //GPU 計算參數
 #define THREAD_SIZE 256 //最大 1024，最小 1
@@ -14,6 +16,7 @@
 
 //比對目標
 #define DEFAULT_INTERVAL_INDEX 0 //指定 alignment.exe 對哪一條區間進行比對，從 0 開始
+//腳本 script.py 會幫忙測試所有區間，此項已經不必修改
 
 //semi 設定
 #define X_FREE_START true
@@ -24,21 +27,6 @@
 //分數設定
 typedef int datatype;//分數資料型態可改 double 或 int
 #define NEG_INF -10000000 //分數默認極小值，可改
-#define SCORE_G -2.0 //GAP score
-#define SCORE_E -1.0 //Extension score
-#define CHAR_NUMBER 5 //所有字元個數，包含空字元 '-'
-namespace protected_space{
-    //0 是 空字元 '-'
-    char const Char_map[CHAR_NUMBER]={'-','A','T','C','G'};
-    //注意邊界要是 NEG_INF，這並非 gap, extension 設定
-    datatype const score_matrix[CHAR_NUMBER][CHAR_NUMBER]={
-        {NEG_INF,NEG_INF,NEG_INF,NEG_INF,NEG_INF},
-        {NEG_INF,1,-1,-1,-1},
-        {NEG_INF,-1,1,-1,-1},
-        {NEG_INF,-1,-1,1,-1},
-        {NEG_INF,-1,-1,-1,1},
-    };
-}
 
 //alignment 中斷點設定
 #define ALM_END_POINT_SIZE 60000ui64

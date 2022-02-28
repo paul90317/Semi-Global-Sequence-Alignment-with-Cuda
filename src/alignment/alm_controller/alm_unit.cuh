@@ -66,12 +66,12 @@ public:
             from->set_m(pointer::toy);
             ret=y;
         }
-        return ret+protected_space::gscore_matrix[CHAR_NUMBER*_x+_y];
+        return ret+score::gscore_matrix[score::n_device*_x+_y];
     }
-    __all__ datatype to_x(trace_unit *from){
-        datatype _m=m+SCORE_G;
-        datatype _x=x+SCORE_E;
-        datatype _y=y+SCORE_G;
+    __device__ datatype to_x(trace_unit *from){
+        datatype _m=m+score::g_device;
+        datatype _x=x+score::e_device;
+        datatype _y=y+score::g_device;
         if(_m>_x&&_m>_y){
             from->set_x(pointer::tom);
             return _m;
@@ -83,10 +83,10 @@ public:
         from->set_x(pointer::toy);
         return _y;
     }
-    __all__ datatype to_y(trace_unit *from){
-        datatype _m=m+SCORE_G;
-        datatype _x=x+SCORE_G;
-        datatype _y=y+SCORE_E;
+    __device__ datatype to_y(trace_unit *from){
+        datatype _m=m+score::g_device;
+        datatype _x=x+score::g_device;
+        datatype _y=y+score::e_device;
         if(_m>_x&&_m>_y){
             from->set_y(pointer::tom);
             return _m;
