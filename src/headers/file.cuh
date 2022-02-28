@@ -49,9 +49,9 @@ __host__ bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r)
     return true;
 }
 
-__host__ bool load_best_interval(datatype* score,int* xl,int* xr,int* yl,int* yr){
+__host__ bool load_best_interval(char* filename,datatype* score,int* xl,int* xr,int* yl,int* yr){
     std::fstream fs;
-    fs.open(filename_best_score_interval,std::ios::in);
+    fs.open(filename,std::ios::in);
     if(!fs)return false;
     for(int i=0;i<DEFAULT_INTERVAL_INDEX+1;i++)
         fs>>*score>>*xl>>*xr>>*yl>>*yr;

@@ -14,12 +14,12 @@ char my_get_ch(FILE* file){
     }
 }
 
-bool check_alm(byte* x,byte* y,datatype* alm_score){
+bool check_alm(char* filename,byte* x,byte* y,datatype* alm_score){
     char a,b;
     byte _x,_y;
     int xid=1,yid=1;
     FILE* file;
-    file=fopen(filename_alignment,"r");
+    file=fopen(filename,"r");
     int state=0;//m=0 x=1 y=2
     datatype score=0;
     while(true){

@@ -52,7 +52,10 @@ namespace dfs{
 
 int main(int argc,char** argv){
     byte *gx,*gy;
-
+    if(argc!=5){
+        std::cout<<"follow format: alignment.exe [x.txt] [t.txt] [best interval.txt] [alignment.txt]\n";
+        return 0;
+    }
     //common
     gscore_matrix_load();
 
@@ -61,32 +64,32 @@ int main(int argc,char** argv){
     int xl,xr,yl,yr;
 
     //讀取 best interval
-    if(!load_best_interval(&score,&xl,&xr,&yl,&yr)){
+    if(!load_best_interval(argv[3],&score,&xl,&xr,&yl,&yr)){
         std::cout<<"can't open best interval!!!\n";
         exit(1);
     }
-    std::cout<<"Load semi interval from "<<filename_best_score_interval<<" , Index=" <<DEFAULT_INTERVAL_INDEX<<", Score="<<score<<"\n";
+    std::cout<<"Load semi interval from "<<argv[3]<<" , Index=" <<DEFAULT_INTERVAL_INDEX<<", Score="<<score<<"\n";
     int xsz=xr-xl+1;
     int ysz=yr-yl+1;
     
     //讀取 x
-    if(!load_file(&gx,&dfs::x_int,filename_x,xl,xr)){
+    if(!load_file(&gx,&dfs::x_int,argv[1],xl,xr)){
         std::cout<<"can't read x sequence!!!\n";
         exit(1);
     }
-    std::cout<<"X sequence: "<<filename_x<<" , Semi interval=["<<xl<<", "<<xr<<"]\n";
+    std::cout<<"X sequence: "<<argv[1]<<" , Semi interval=["<<xl<<", "<<xr<<"]\n";
 
     //讀取 y
-    if(!load_file(&gy,&dfs::y_int,filename_y,yl,yr)){
+    if(!load_file(&gy,&dfs::y_int,argv[2],yl,yr)){
         std::cout<<"can't read y sequence!!!\n";
         exit(1);
     }
-    std::cout<<"Y sequence: "<<filename_y<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";
+    std::cout<<"Y sequence: "<<argv[2]<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";
 
     //運算
     dfs::afg_c=afg_controller(gx,gy,xsz);
     dfs::alm_c=alm_controller(gx,gy,dfs::x_int,dfs::y_int);
-    dfs::file=fopen(filename_alignment,"w");
+    dfs::file=fopen(argv[4],"w");
     time_start();
     dfs::dfs(1,xsz,1,ysz,false);
     time_end();
@@ -94,11 +97,11 @@ int main(int argc,char** argv){
     std::cout<<"Best score: "<<dfs::bscore<<"\n";
     
     datatype chk_score;
-    bool match=check_alm(dfs::x_int,dfs::y_int,&chk_score);
+    bool match=check_alm(argv[4],dfs::x_int,dfs::y_int,&chk_score);
     if(!match){
         std::cout<<"Error: the alignment don't match original sequences!!!\n";
     }else{
-        std::cout<<"The score of alignment "<<filename_alignment<<" is "<<chk_score<<"\n";
+        std::cout<<"The score of alignment "<<argv[4]<<" is "<<chk_score<<"\n";
     }
     if(dfs::bscore!=score||dfs::bscore!=chk_score){
         std::cout<<"Error: the score is not the same!!!\n";

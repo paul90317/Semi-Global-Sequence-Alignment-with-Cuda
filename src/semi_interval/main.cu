@@ -66,21 +66,24 @@ int main(int argc,char** argv){
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
     int xsize,ysize;
     int nthread,nblock;
-    
+    if(argc!=4){
+        std::cout<<"follow format: semi_interval.exe [x.txt] [t.txt] [best interval.txt]\n";
+        return 0;
+    }
     //common
     gscore_matrix_load();
 
     //讀取
-    if(!load_file(&gx_int,&xsize,filename_x)){
+    if(!load_file(&gx_int,&xsize,argv[1])){
         printf("讀不到 x 序列");
         exit(0);
     }
-    std::cout<<"X sequence: "<<filename_x<<" , Global interval=[1, "<<xsize<<"]\n";
-    if(!load_file(&gy_int,&ysize,filename_y)){
+    std::cout<<"X sequence: "<<argv[1]<<" , Global interval=[1, "<<xsize<<"]\n";
+    if(!load_file(&gy_int,&ysize,argv[2])){
         printf("讀不到 y 序列");
         exit(0);
     }
-    std::cout<<"Y sequence: "<<filename_y<<" , Global interval=[1, "<<ysize<<"]\n";
+    std::cout<<"Y sequence: "<<argv[2]<<" , Global interval=[1, "<<ysize<<"]\n";
     
     //宣告最佳解
 #if (!X_FREE_END&&!Y_FREE_END)
@@ -133,26 +136,26 @@ int main(int argc,char** argv){
         cudaMemcpy(GM1,GM,sizeof(afg_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
     }
     time_end();
-    std::cout<<"Best interval saved in: "<<filename_best_score_interval<<"\n\n";
+    std::cout<<"Best interval saved in: "<<argv[3]<<"\n\n";
 
     //印出結果
 #if (!X_FREE_END&&!Y_FREE_END)
     afg_unit last;
     cudaMemcpy(&last,GM+xsize,sizeof(afg_unit),cudaMemcpyDeviceToHost);//last
     std::cout<<"Best score: "<<last.result().score<<"\n";
-    show_best_and_output_file(res_unit_end(last.result(),0,0),xsize,ysize);
+    show_best_and_output_file(argv[3],res_unit_end(last.result(),0,0),xsize,ysize);
 #elif (X_FREE_END&&Y_FREE_END)
     res_unit_end* cbests;
     datatype bestscore=interval_result_from_gup(&cbests,g_best_arr,xsize+1);
     std::cout<<"Best score: "<<bestscore<<"\n";
-    show_best_and_output_file(cbests,xsize+1,xsize,ysize,bestscore);
+    show_best_and_output_file(argv[3],cbests,xsize+1,xsize,ysize,bestscore);
 #else
     datatype ctmp_bscore;
     cudaMemcpy(&ctmp_bscore,g_best_score,sizeof(datatype),cudaMemcpyDeviceToHost);
     std::cout<<"Best score: "<<ctmp_bscore<<"\n";
     res_unit_end*cbest_stack;
     int c_bs_count=interval_result_from_gup(&cbest_stack,g_best_stack,g_bs_count);
-    show_best_and_output_file(cbest_stack,c_bs_count,xsize,ysize,ctmp_bscore);
+    show_best_and_output_file(argv[3],cbest_stack,c_bs_count,xsize,ysize,ctmp_bscore);
 #endif
 }
 

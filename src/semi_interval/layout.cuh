@@ -5,9 +5,9 @@
 #include <fstream>
 #include <cstdlib>
 
-void show_best_and_output_file(res_unit_end* bests,int count,int xsize,int ysize,datatype best_score){
+void show_best_and_output_file(char* filename,res_unit_end* bests,int count,int xsize,int ysize,datatype best_score){
     std::fstream fs;
-    fs.open(filename_best_score_interval,std::ios::out);
+    fs.open(filename,std::ios::out);
     int k=0;
     for(int i=0;i<count;i++){
         res_unit_end best=bests[i];
@@ -37,9 +37,9 @@ void show_best_and_output_file(res_unit_end* bests,int count,int xsize,int ysize
     }
     fs.close();
 }
-void show_best_and_output_file(res_unit_end best,int xsize,int ysize){
+void show_best_and_output_file(char* filename,res_unit_end best,int xsize,int ysize){
     std::fstream fs;
-    fs.open(filename_best_score_interval,std::ios::out);
+    fs.open(filename,std::ios::out);
     datatype score=best.score;
     int xstart=1;
     int ystart=1;
