@@ -1,5 +1,9 @@
-import json
-from multiprocessing.sharedctypes import Value
+import os
+
+def mkdir(dir):
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+mkdir("temp")
 
 score={
     "chars":["A","T","G","C"],

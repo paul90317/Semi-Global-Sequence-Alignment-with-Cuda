@@ -1,19 +1,28 @@
-out := out
 includes := -I src/headers
-files := src/*/main.cu
 
-all:semi_interval alignment cpu
+all:semi_interval.exe alignment.exe cpu.exe
 
-ls:
-	@echo $(files)
+gpu_test:semi_interval.exe alignment.exe
+	python scripts\gpu_test.py
 
-%: ./src/%/main.cu
-	nvcc -w $(includes) $< -o $(out)/$@
+cpu_test:cpu.exe
+	python scripts\cpu_test.py
 
-cl: 
-	rm $(out)\*
+clean_tasks:
+	python scripts\clean.py
 
-cpu:
-	g++ $(includes) src/cpu/main.cpp -o $(out)/cpu.exe
+semi_interval.exe: ./src/semi_interval/main.cu
+	nvcc -w $(includes) $< -o $@
 
-.PHONY: cl
+alignment.exe: ./src/alignment/main.cu
+	nvcc -w $(includes) $< -o $@
+
+cpu.exe: src/cpu/main.cpp
+	nvcc -w $(includes) $< -o $@
+
+clean:
+	del *.exe
+	del *.exp
+	del *.lib
+
+.PHONY: clean

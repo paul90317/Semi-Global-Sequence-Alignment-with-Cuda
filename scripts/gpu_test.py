@@ -2,7 +2,7 @@ import load_score_matrix
 import os
 
 def run_alm(pair,intv):
-    cmd=".\\out\\alignment.exe \"tasks\\{0}\\x.txt\" \"tasks\\{0}\\y.txt\" temp\\best.txt temp\\score.txt \"tasks\\{0}\\out\\alm\\{1}.txt\""\
+    cmd=".\\alignment.exe \"tasks\\{0}\\x.txt\" \"tasks\\{0}\\y.txt\" temp\\best.txt temp\\score.txt \"tasks\\{0}\\out\\alm\\{1}.txt\""\
         .format(pair,intv)
     print(cmd)
     os.system(cmd)
@@ -15,7 +15,7 @@ for pair in os.listdir("tasks"):
     print(f'-----------{pair}------------')
     mkdir(f"tasks/{pair}/out")
     mkdir(f"tasks/{pair}/out/alm")
-    cmd=".\\out\\semi_interval.exe \"tasks\\{0}\\x.txt\" \"tasks\\{0}\\y.txt\" tasks\\{0}\\out\\best.txt temp\\score.txt"\
+    cmd=".\\semi_interval.exe \"tasks\\{0}\\x.txt\" \"tasks\\{0}\\y.txt\" tasks\\{0}\\out\\best.txt temp\\score.txt"\
         .format(pair)
     print(cmd)
     os.system(cmd)
