@@ -138,7 +138,7 @@ free|free|free|free|7.07s
 ## Test  
 ### enviroment 
 **`OS`** `win10`  
-**`make`**  `choco`
+**`make`**  `choco`  
 **`nvidia-smi`**  
 ```cmd
 +-----------------------------------------------------------------------------+
