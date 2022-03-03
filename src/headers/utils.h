@@ -11,13 +11,24 @@ template<typename T>
 T* oalloc(int count){
     return (T*)malloc(count*sizeof(T));
 }
+
 byte mapping_Char(char c){
     for(byte i=0;i<score::n_host;i++){
         if(c==score::Char_map[i])return i;
     }
-    printf("Error: Char [%c] not found!!\n",c);
-    exit(0);
+    return -1;
 }
+
+char my_get_ch(FILE* file){
+    char c;
+    while(true){
+        c=getc(file);
+        if(c==EOF)return c;
+        if(c<32)continue;
+        return c;
+    }
+}
+
 inline char to_Char(byte i){
     return score::Char_map[i];
 }

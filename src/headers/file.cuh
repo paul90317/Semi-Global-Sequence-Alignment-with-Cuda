@@ -15,9 +15,13 @@ __host__ bool load_file(byte** p_gx,int* xsize,const char* filename){
     x_int[0]=0;
     int j=0;
     char c;
-    while(c=getc(file),c!=EOF){
-        if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9'))continue;
-        x_int[j+1]=mapping_Char(c);
+    while(c=my_get_ch(file),c!=EOF){
+        byte b=mapping_Char(c);
+        if(b==(byte)-1){
+            printf("Error: Char [%c] not found!!\n",c);
+            exit(0);
+        }
+        x_int[j+1]=b;
         j++;
     }
     *xsize=j;
@@ -36,10 +40,12 @@ __host__ bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r)
     x_int[0]=0;
     int j=1;
     for(int i=1;i<=r;){
-        char c=getc(f);
+        char c=my_get_ch(f);
         if(c==EOF)return false;
-        if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9'))continue;
-        if(i>=l)x_int[j++]=mapping_Char(c);
+        byte b=mapping_Char(c);
+        if(b==(byte)-1)return false;
+        if(i>=l)
+            x_int[j++]=b;
         i++;
     }
     fclose(f);

@@ -4,16 +4,6 @@
 #include "config.h"
 #include "utils.h"
 
-char my_get_ch(FILE* file){
-    char c;
-    while(true){
-        c=getc(file);
-        if(c==EOF)return c;
-        if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9')&&c!='-')continue;
-        return c;
-    }
-}
-
 bool check_alm(char* filename,byte* x,byte* y,datatype* alm_score){
     char a,b;
     byte _x,_y;
@@ -25,6 +15,7 @@ bool check_alm(char* filename,byte* x,byte* y,datatype* alm_score){
     while(true){
         a=my_get_ch(file);
         if(a==EOF)break;
+        my_get_ch(file);//get space
         b=my_get_ch(file);
         _x=mapping_Char(a);
         _y=mapping_Char(b);

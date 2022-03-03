@@ -1,15 +1,17 @@
-import load_score_matrix
+import matrix_transformer
 import os
+
+from matrix_transformer import mkdir
+
+matrix_transformer.transform("score.json","temp/score.txt")
+
+mkdir("temp")
 
 def run_alm(pair,intv):
     cmd=".\\alignment.exe \"tasks\\{0}\\x.txt\" \"tasks\\{0}\\y.txt\" temp\\best.txt temp\\score.txt \"tasks\\{0}\\out\\alm\\{1}.txt\""\
         .format(pair,intv)
     print(cmd)
     os.system(cmd)
-
-def mkdir(dir):
-    if not os.path.isdir(dir):
-        os.mkdir(dir)
         
 for pair in os.listdir("tasks"):
     print(f'-----------{pair}------------')
