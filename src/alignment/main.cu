@@ -51,12 +51,12 @@ namespace dfs{
 int main(int argc,char** argv){
     byte *gx,*gy;
     if(argc!=6){
-        std::cout<<"follow format: alignment.exe [x.txt] [y.txt] [best interval.txt] [score.txt] [alignment.txt]\n";
+        std::cout<<"Error: follow format => alignment.exe [x.txt] [y.txt] [best interval.txt] [score.txt] [alignment.txt]\n";
         return 0;
     }
     //common
     if(!score::load(argv[4])){
-        std::cout<<"can't load score matrix in "<<argv[4]<<"\n";
+        std::cout<<"Error: can't load score matrix in "<<argv[4]<<"\n";
         exit(0);
     }else{
         std::cout<<"loaded score matrix in "<<argv[4]<<"\n";
@@ -68,7 +68,7 @@ int main(int argc,char** argv){
 
     //讀取 best interval
     if(!load_best_interval(argv[3],&score,&xl,&xr,&yl,&yr)){
-        std::cout<<"can't open best interval!!!\n";
+        std::cout<<"Error: can't open best interval!!!\n";
         exit(0);
     }
     std::cout<<"Load semi interval from "<<argv[3]<<" , Index=" <<DEFAULT_INTERVAL_INDEX<<", Score="<<score<<"\n";
@@ -77,14 +77,14 @@ int main(int argc,char** argv){
     
     //讀取 x
     if(!load_file(&gx,&dfs::x_int,argv[1],xl,xr)){
-        std::cout<<"can't read x sequence!!!\n";
+        std::cout<<"Error: can't read x sequence!!!\n";
         exit(0);
     }
     std::cout<<"X sequence: "<<argv[1]<<" , Semi interval=["<<xl<<", "<<xr<<"]\n";
 
     //讀取 y
     if(!load_file(&gy,&dfs::y_int,argv[2],yl,yr)){
-        std::cout<<"can't read y sequence!!!\n";
+        std::cout<<"Error: can't read y sequence!!!\n";
         exit(0);
     }
     std::cout<<"Y sequence: "<<argv[2]<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";

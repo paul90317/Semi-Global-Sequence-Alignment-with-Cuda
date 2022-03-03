@@ -67,12 +67,12 @@ int main(int argc,char** argv){
     int xsize,ysize;
     int nthread,nblock;
     if(argc!=5){
-        std::cout<<"follow format: semi_interval.exe [x.txt] [t.txt] [best interval.txt] [score.txt]\n";
+        std::cout<<"Error: follow format => semi_interval.exe [x.txt] [y.txt] [best interval.txt] [score.txt]\n";
         return 0;
     }
     //common
     if(!score::load(argv[4])){
-        std::cout<<"can't load score matrix in "<<argv[4]<<"\n";
+        std::cout<<"Error: can't load score matrix in "<<argv[4]<<"\n";
         exit(0);
     }else{
         std::cout<<"loaded score matrix in "<<argv[4]<<"\n";
@@ -80,12 +80,12 @@ int main(int argc,char** argv){
 
     //讀取
     if(!load_file(&gx_int,&xsize,argv[1])){
-        printf("讀不到 x 序列");
+        printf("Error: 讀不到 x 序列");
         exit(0);
     }
     std::cout<<"X sequence: "<<argv[1]<<" , Global interval=[1, "<<xsize<<"]\n";
     if(!load_file(&gy_int,&ysize,argv[2])){
-        printf("讀不到 y 序列");
+        printf("Error: 讀不到 y 序列");
         exit(0);
     }
     std::cout<<"Y sequence: "<<argv[2]<<" , Global interval=[1, "<<ysize<<"]\n";

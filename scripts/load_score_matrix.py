@@ -1,3 +1,4 @@
+import json
 import os
 
 def mkdir(dir):
@@ -5,17 +6,13 @@ def mkdir(dir):
         os.mkdir(dir)
 mkdir("temp")
 
-score={
-    "chars":["A","T","G","C"],
-    "matrix":[
-        [1,-1,-1,-1],
-        [-1,1,-1,-1],
-        [-1,-1,1,-1],
-        [-1,-1,-1,1]
-    ],
-    "gap":-2,
-    "extension":-1
-}
+if os.path.isfile("score.json"):
+    with open("score.json","r") as f:
+        score=json.load(f)
+else:
+    print("Error: can't load score matrix in score.json")
+    exit(0)
+
 
 with open("temp/score.txt","w") as f:
     n=len(score["chars"])

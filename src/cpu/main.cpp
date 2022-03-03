@@ -32,10 +32,10 @@ int main(int argc,char** argv){
     int *x,*y;
     int xsize,ysize;
     if(argc!=4){
-        std::cout<<"follow format cpu.exe [x.txt] [y.txt] [score.txt]\n";
+        std::cout<<"Error: follow format => cpu.exe [x.txt] [y.txt] [score.txt]\n";
     }
     if(!score::load(argv[3])){
-        std::cout<<"can't load score matrix in "<<argv[3]<<"\n";
+        std::cout<<"Error: can't load score matrix in "<<argv[3]<<"\n";
         exit(0);
     }else{
         std::cout<<"loaded score matrix in "<<argv[3]<<"\n";
