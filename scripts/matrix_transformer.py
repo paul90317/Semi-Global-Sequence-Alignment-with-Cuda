@@ -27,7 +27,7 @@ def transform(fjson,ftxt):
         n=len(rchars)
         f.write(str(n)+'\n')
         for c in rchars:
-            f.write(str(c)+' ')
+            f.write(str(c))
         f.write('\n')
         matrix=score['matrix']
         if type(matrix)==list:

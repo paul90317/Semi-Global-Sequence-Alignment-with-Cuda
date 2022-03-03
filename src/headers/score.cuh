@@ -35,11 +35,12 @@ namespace score{
             if(!fs)return false;
             int n;
             fs>>n;
+            fs.getline(buf,9999);
+            fs.getline(buf+1,9998);
             Char_map=(char*)malloc(sizeof(char)*(n+1));
             Char_map[0]='-';
-            char* pch = strtok (buf," \r\n");
             for(int i=1;i<=n;i++){
-                fs>>Char_map[i];
+                Char_map[i]=buf[i];
             }
             score_matrix=(datatype*)malloc(sizeof(datatype)*(n+1)*(n+1));
             for(int j=0;j<=n;j++){

@@ -8,9 +8,49 @@ You can edit config in [config.h](./src/headers/config.h), this config is a part
 In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
 You need to change score matrix in [score.json](score.json), and execute command
 ```
-python scripts\load_score_matrix.py
+python scripts\matrix_transformer.py score.json temp/score.txt
 ```
-to generate `score.txt` in temp folder, this is the input of CUDA|CPP Programs.  
+to generate `score.txt` in temp folder, this is the input of CUDA|CPP Programs. 
+*** 
+This is the score matrix for DNA.
+```json
+{
+    "chars":["A","T","G","C"],
+    "matrix":[
+        [1,-1,-1,-1],
+        [-1,1,-1,-1],
+        [-1,-1,1,-1],
+        [-1,-1,-1,1]
+    ],
+    "gap":-2,
+    "extension":-1
+}
+```
+***
+This is the score matrix for a-z, A-Z and space.  
+You can only use match and miss to represent the score matrix.  
+```json
+{
+    "chars":[
+        {
+            "l":"a",
+            "r":"z"
+        },
+        {
+            "l":"A",
+            "r":"Z"
+        },
+        " "
+    ],
+    "matrix":{
+        "match":1,
+        "miss":-1
+    },
+    "gap":-2,
+    "extension":-1
+}
+```
+***
 Or, you can also use command
 ```
 make gpu_test
