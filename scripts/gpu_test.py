@@ -1,3 +1,4 @@
+from sys import argv
 import matrix_transformer
 import os
 
@@ -21,10 +22,11 @@ for pair in os.listdir("tasks"):
         .format(pair)
     print(cmd)
     os.system(cmd)
-    with open(f"tasks/{pair}/out/best.txt","r") as f:
-        intvs=f.readlines()
-        for intv in intvs:
-            print('---------------------------')
-            with open("temp/best.txt","w") as fw:
-                fw.write(intv)
-            run_alm(pair,intv.replace(' ','-').replace('\n',''))
+    if len(argv)>=2 and argv[1]=="-a":
+        with open(f"tasks/{pair}/out/best.txt","r") as f:
+            intvs=f.readlines()
+            for intv in intvs:
+                print('---------------------------')
+                with open("temp/best.txt","w") as fw:
+                    fw.write(intv)
+                run_alm(pair,intv.replace(' ','-').replace('\n',''))
