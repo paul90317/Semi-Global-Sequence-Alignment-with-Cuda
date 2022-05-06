@@ -133,7 +133,7 @@ make clean_tasks
 ```
 > clean alignments in tasks  
 ***
-*`score.json`*  
+**`score.json`**  
 > This is very important, instead of `score.txt`, python scripts only allow `score.json`, but I think `score.json` is easier to edit.
 
 *for DNA*
