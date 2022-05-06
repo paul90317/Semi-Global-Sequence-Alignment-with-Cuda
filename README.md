@@ -1,10 +1,10 @@
 # Semi-Sequence-Alignment-with-Cuda  
 ## What I have done
 As the topic, semi sequence alignment with cuda technique. However, I don't do this by one program but two.  
-1. the program [semi_interval](./src/semi_interval/main.cu), will calculate out best score with semi x,y first, then generate x,y's semi inteval.  
-2. the program [alignment](./src/semi_interval/main.cu), will align the sequence x,y with the interval, although this is global align, but we have semi interval to do this, so result will as same as just do local sequence alignment.  
+1. the program [`semi_interval`](./src/semi_interval/main.cu), will calculate out best score with semi x,y first, then generate x,y's semi inteval.  
+2. the program [`alignment`](./src/semi_interval/main.cu), will align the sequence x,y with the interval, although this is global align, but we have semi interval to do this, so result will as same as just do local sequence alignment.  
 ## Config
-You can edit config in [config.h](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
+You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
 In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
 ## Score matrix
 `<score.txt>` store the score matrix used in program `alignment.exe` and `semi_interval.exe`.
@@ -45,7 +45,7 @@ make clean
 ```shell
 semi_interval.exe <x.txt> <t.txt> <best interval.txt> <score.txt>
 ```
-> Get the best interval, you need to config semi setting and datatype of score matrix in [config.h](src/headers/config.h).  
+> Get the best interval, you need to config semi setting and datatype of score matrix in [`config.h`](src/headers/config.h).  
 
 * `<x.txt> <y.txt>` the files need to contain input sequence.  
 * `<best interval.txt>` best intervals store in this file.
