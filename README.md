@@ -162,7 +162,10 @@ You can use my python scripts which calculate alignment automatically in a speci
 │   │       └───alm
 │   │           └───...
 ```
-### Commands
+> The folder `alm/` contains alignments (`<alignment.txt>`) generated from `alignment.exe` 
+
+> The file `best.txt` is the file which stores the best intervals generated from `semi_interval.exe`
+### commands
 ```shell
 make cpu_test
 ```
