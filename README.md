@@ -89,7 +89,7 @@ You can use my python scripts which calculate alignment automatically in a speci
 │   │   └───x.txt
 │   │   └───y.txt
 ```
-***after command `make gpu_test`***  
+*after command `make gpu_test`*  
 
 ```shell
 ├───tasks
