@@ -7,8 +7,9 @@ As the topic, semi sequence alignment with cuda technique. However, I don't do t
 You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
 In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
 ## Score matrix
-`<score.txt>` store the score matrix used in program `alignment.exe` and `semi_interval.exe`.
-*format*
+`<score.txt>` store the score matrix used in program `alignment.exe` and `semi_interval.exe`.  
+
+***format***
 ```txt
 <number base>
 <base> ...
