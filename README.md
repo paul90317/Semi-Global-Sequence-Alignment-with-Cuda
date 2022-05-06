@@ -7,7 +7,7 @@ As the topic, semi sequence alignment with cuda technique. However, I don't do t
 You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
 In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
 ## Input and Ouput File Format
-#### `<score.txt>` 
+### Score Matrix `<score.txt>` 
 > Which stores the score matrix used in program `alignment.exe` and `semi_interval.exe`.  
 
 ***input format***
@@ -35,7 +35,7 @@ ATGC
 -1
 ```
 ***
-#### `<x.txt>` `<y.txt>`  
+### Sequence `<x.txt>` `<y.txt>`  
 > The file only contain `newline` and `<base>`, the program will ignore `newline` when read the sequence file.
 
 ***input example*** 
@@ -45,7 +45,7 @@ AATTCGTT
 TGGAAT
 ```
 ***
-#### `<best interval.txt>`
+### Best Interval `<best interval.txt>`
 
 ***output format by*** *`semi_interval.exe`*
 ```txt
@@ -60,7 +60,7 @@ TGGAAT
 ```
 > If there are multiple lines, only the first line is consumed by `alignment.exe`
 ***
-#### `<alignment.txt>` 
+### Alignment `<alignment.txt>` 
 
 ***output example***
 ```txt
@@ -162,10 +162,10 @@ You can use my python scripts which calculate alignment automatically in a speci
 │   │       └───alm
 │   │           └───...
 ```
-> The folder `alm/` contains alignments (`<alignment.txt>`) generated from `alignment.exe` 
+> The folder `alm/` contains alignments `<alignment.txt>` generated from `alignment.exe` 
 
 > The file `best.txt` is the file which stores the best intervals generated from `semi_interval.exe`
-### commands
+### Commands
 ```shell
 make cpu_test
 ```
@@ -179,7 +179,7 @@ make clean_tasks
 ```
 > clean alignments in tasks  
 ***
-#### `score.json`  
+### Score Matrix `score.json`  
 > This is very important, instead of `score.txt`, python scripts only allow `score.json`, but I think `score.json` is easier to edit.
 
 *example for DNA*
