@@ -30,7 +30,7 @@ ATGC
 -2
 -1
 ```
-## Compile and run   
+## Compile and Run   
 ***compile***
 ```shell
 make
