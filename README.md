@@ -1,11 +1,12 @@
-# Semi-Sequence-Alignment-with-Cuda  
+# Semi Global Sequence Alignment with Cuda  
 ## What I have done
-As the topic, semi sequence alignment with cuda technique. However, I don't do this by one program but two.  
-1. the program [`semi_interval`](./src/semi_interval/main.cu), will calculate out best score with semi x,y first, then generate x,y's semi inteval.  
-2. the program [`alignment`](./src/semi_interval/main.cu), will align the sequence x,y with the interval, although this is global align, but we have semi interval to do this, so result will as same as just do local sequence alignment.  
+As the topic, I alse implement the local and global sequence alignment.  
+However, I don't do this by one program but two.  
+1. The program [`semi_interval`](./src/semi_interval/main.cu), will calculate best score with semi x and y first, then generate semi inteval of x and y.  
+2. The program [`alignment`](./src/semi_interval/main.cu), will align the sequence x,y with the interval, although this is global align, but we use semi interval to do this, so result will as same as semi global sequence alignment.  
 ## Config
 You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
-In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
+In this file, you can edit cuda thread number per block, start and end of sequence x and y is free or fixed the datatype of score matrix and so on.
 
 ## Compile and Run   
 ### compile
@@ -114,72 +115,55 @@ C C
 You can use my python scripts which calculate alignment automatically in a specific file structure. If you have many alignment to do, it's useful.  
 
 ### File structure
-<style type="text/css">
-    .hide{
-        display:none;
-    }
-    .code_block{
-		border-radius:10px;
-        padding:5px 10px;
-        background-color: black;
-	}
-</style>
-<div class="code_block">
-├───<a href="https://github.com/paul90317/Semi-Global-Sequence-Alignment-with-Cuda/blob/main/score.json">score.json</a><br/>
-├───<a href="https://github.com/paul90317/Semi-Global-Sequence-Alignment-with-Cuda/tree/main/tasks">tasks</a><br/>
-│   ├───100K-100K<br/>
-│   │   └───x.txt<br/>
-│   │   └───y.txt<br/>
-│   ├───100K-10K<br/>
-│   │   └───x.txt<br/>
-│   │   └───y.txt<br/>
-│   ├───10K-100K<br/>
-│   │   └───x.txt<br/>
-│   │   └───y.txt<br/>
-│   ├───10K-10K<br/>
-│   │   └───x.txt<br/>
-│   │   └───y.txt<br/>
-│   └───1K-1K<br/>
-│   │   └───x.txt<br/>
-│   │   └───y.txt<br/>
-</div><br/>
+```shell
+├───score.json
+├───tasks
+│   ├───100K-100K
+│   │   └───x.txt
+│   │   └───y.txt
+│   ├───100K-10K
+│   │   └───x.txt
+│   │   └───y.txt
+│   ├───10K-100K
+│   │   └───x.txt
+│   │   └───y.txt
+│   ├───10K-10K
+│   │   └───x.txt
+│   │   └───y.txt
+│   └───1K-1K
+│   │   └───x.txt
+│   │   └───y.txt
+```
+*after command `make gpu_test`*  
 
-<script>
-    function change(){
-        x=document.getElementById("x");
-        x.classList.remove("hide");
-    }
-</script>   
-<div onclick="change();">after command <code>make gpu_test</code></div><br/>
-<div class="code_block hide" id="x">
-├───tasks<br/>
-│   ├───100K-100K<br/>
-│   │   └───out<br/>
-│   │       └───best.txt<br/>
-│   │       └───alm<br/>
-│   │           └───...<br/>
-│   ├───100K-10K<br/>
-│   │   └───out<br/>
-│   │       └───best.txt<br/>
-│   │       └───alm<br/>
-│   │           └───...<br/>
-│   ├───10K-100K<br/>
-│   │   └───out<br/>
-│   │       └───best.txt<br/>
-│   │       └───alm<br/>
-│   │           └───...<br/>
-│   ├───10K-10K<br/>
-│   │   └───out<br/>
-│   │       └───best.txt<br/>
-│   │       └───alm<br/>
-│   │           └───...<br/>
-│   └───1K-1K<br/>
-│   │   └───out<br/>
-│   │       └───best.txt<br/>
-│   │       └───alm<br/>
-│   │           └───...<br/>
-</div><br/>
-
+```shell
+├───tasks
+│   ├───100K-100K
+│   │   └───out
+│   │       └───best.txt
+│   │       └───alm
+│   │           └───...
+│   ├───100K-10K
+│   │   └───out
+│   │       └───best.txt
+│   │       └───alm
+│   │           └───...
+│   ├───10K-100K
+│   │   └───out
+│   │       └───best.txt
+│   │       └───alm
+│   │           └───...
+│   ├───10K-10K
+│   │   └───out
+│   │       └───best.txt
+│   │       └───alm
+│   │           └───...
+│   └───1K-1K
+│   │   └───out
+│   │       └───best.txt
+│   │       └───alm
+│   │           └───...
+```
 > The folder `alm/` contains alignments `<alignment.txt>` generated from `alignment.exe` 
 
 > The file `best.txt` is the file which stores the best intervals generated from `semi_interval.exe`
@@ -187,11 +171,11 @@ You can use my python scripts which calculate alignment automatically in a speci
 ```shell
 make cpu_test
 ```
-> Just use cpu run global alignment score in tasks, there is no semi function, so it just let you can compare cpu's performance with gpu's or, the global alignment score is realy the same as the program run with cuda(set x,y's start,end to fixed).  
+> Just use CPU run global alignment score in tasks, there is no semi function, so it just let you can compare the performance of CPU with that of GPU or, the global alignment score should be as same as the program run with CUDA (set start and end of x and y to fixed).  
 ```shell
 make gpu_test
 ```
-> Calcuate best score and its interval with cuda, then generate best score's alignment with cuda and all interals generated by `semi_interval.exe`, and this program also check the alignments's socre.  
+> Calcuate best scores and its intervals by `semi_interval.exe`, then run `alignemnt.exe` generate alignments of the intervals generated by `semi_interval.exe`.  
 ```shell
 make clean_tasks
 ```
@@ -272,6 +256,7 @@ Time taken: 11.67s
 Best score: -90273
 The score of alignment ../res/alignment.txt is -90273
 ```
+> Aside from generating the alignment, the program also checks whether or not the score is as same as that saved in `<best interval.txt>`.
 ## Performance  
 ```shell
 x: fixed start, fixed end, size= 16641

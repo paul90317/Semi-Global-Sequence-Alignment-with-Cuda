@@ -62,6 +62,7 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,
 }
 
 int main(int argc,char** argv){
+    std::cout<<std::fixed<<std::setprecision(5);
     byte *gx_int,*gy_int;
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
     int xsize,ysize;

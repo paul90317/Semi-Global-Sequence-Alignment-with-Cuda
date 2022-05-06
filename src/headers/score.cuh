@@ -14,7 +14,7 @@ namespace score{
     __device__ int n_device;
     __device__ datatype g_device;
     __device__ datatype e_device;
-    __global__ void _gscore_matrix_load(datatype* t,int n,int g,int e){
+    __global__ void _gscore_matrix_load(datatype* t,int n,datatype g,datatype e){
         gscore_matrix=t;
         n_device=n;
         g_device=g;

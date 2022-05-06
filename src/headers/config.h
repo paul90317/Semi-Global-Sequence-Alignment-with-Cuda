@@ -25,8 +25,9 @@
 #define Y_FREE_END false
 
 //分數設定
-typedef int datatype;//分數資料型態可改 double 或 int
+typedef double datatype;//分數資料型態可改 double 或 int
 #define NEG_INF -10000000 //分數默認極小值，可改
+#define ERROR_FLOAT 0.05 //alignment.exe 最後做驗算時的服點數誤差
 
 //alignment 中斷點設定
 #define ALM_END_POINT_SIZE 60000ui64

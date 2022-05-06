@@ -25,4 +25,4 @@ clean:
 	del *.exp
 	del *.lib
 
-.PHONY: clean
+.PHONY: clean all clean_tasks cpu_test gpu_test

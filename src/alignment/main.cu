@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
+#include <iomanip>
 #include "afg_controller.cuh"
 #include "file.cuh"
 #include "test_time.h"
@@ -47,6 +48,20 @@ namespace dfs{
     }
 }
 
+bool is_same(datatype a,datatype b){
+    if(typeid(datatype)==typeid(float)){
+        return abs(a-b)<=ERROR_FLOAT;
+    }
+    if(typeid(datatype)==typeid(double)){
+        //std::cout<<std::fixed<<std::setprecision(5)<<a<<" "<<b<<"\n";
+        return abs(a-b)<=ERROR_FLOAT;
+    }
+    if(typeid(datatype)==typeid(long double)){
+        return abs(a-b)<=ERROR_FLOAT;
+    }
+    return a==b;
+    
+}
 
 int main(int argc,char** argv){
     byte *gx,*gy;
@@ -106,7 +121,7 @@ int main(int argc,char** argv){
     }else{
         std::cout<<"The score of alignment "<<argv[5]<<" is "<<chk_score<<"\n";
     }
-    if(dfs::bscore!=score||dfs::bscore!=chk_score){
+    if(!is_same(dfs::bscore,score)||!is_same(dfs::bscore,chk_score)){
         std::cout<<"Error: the score is not the same!!!\n";
     }
 }
