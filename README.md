@@ -41,7 +41,7 @@ make
 make clean
 ```
 > clean the program
-
+***
 ***run***
 ```shell
 semi_interval.exe <x.txt> <t.txt> <best interval.txt> <score.txt>
@@ -50,8 +50,8 @@ semi_interval.exe <x.txt> <t.txt> <best interval.txt> <score.txt>
 
 * `<x.txt> <y.txt>` the files need to contain input sequence.  
 * `<best interval.txt>` best intervals store in this file.
-* `<score.txt>` score matrix store will be get from this file, see [Score matrix](#score-matrix).  
-
+* `<score.txt>` score matrix store will be get from this file, see [Score matrix](#score-matrix).
+***
 ```shell
 alignment.exe <x.txt> <y.txt> <best interval.txt> <score.txt> <alignment.txt>
 ```
@@ -60,6 +60,7 @@ alignment.exe <x.txt> <y.txt> <best interval.txt> <score.txt> <alignment.txt>
 * `<best interval.txt>` best interval should be got in this file (only get first line (interval)).
 * `<score.txt>` score matrix store will be get from this file, see [Score matrix](#score-matrix)
 * `<alignment.txt>` alignment will be stored in this file.  
+***
 ```shell
 cpu.exe <x.txt> <y.txt> <score.txt>`  
 ```
