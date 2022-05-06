@@ -19,7 +19,7 @@ In this file, you can edit output file location, cuda, sequence x,y's start and 
 <gap>
 <extension>
 ```
-*example*
+***example***
 ```txt
 4
 ATGC
@@ -31,7 +31,7 @@ ATGC
 -1
 ```
 ## Compile and run   
-*compile*
+***compile***
 ```shell
 make
 ```
@@ -41,7 +41,7 @@ make clean
 ```
 > clean the program
 
-*run*
+***run***
 ```shell
 semi_interval.exe <x.txt> <t.txt> <best interval.txt> <score.txt>
 ```
@@ -65,11 +65,11 @@ cpu.exe <x.txt> <y.txt> <score.txt>`
 > Just for testing speed, only calculate and print out global sequence alignment score.  
 
 * `<x.txt> <y.txt>` the files need to contain input sequence.  
-* `<score.txt>` score matrix store will be get from this file, see [config](#config)
+* `<score.txt>` score matrix store will be get from this file, see [Score matrix](#score-matrix)
 ## Python scripts
 You can use my python scripts which calculate alignment automatically. If you have many alignment to do, is useful.  
 
-*File structure*
+***File structure***
 ```shell
 ├───score.json
 ├───tasks
@@ -119,7 +119,7 @@ You can use my python scripts which calculate alignment automatically. If you ha
 │   │       └───alm
 │   │           └───...
 ```
-*commands*  
+***commands*** 
 ```shell
 make cpu_test
 ```
