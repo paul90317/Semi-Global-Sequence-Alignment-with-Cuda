@@ -7,7 +7,7 @@ As the topic, semi sequence alignment with cuda technique. However, I don't do t
 You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
 In this file, you can edit output file location, cuda, sequence x,y's start and end is free or fixed and so on.
 ## Input and Ouput File Format
-### `<score.txt>` 
+#### `<score.txt>` 
 > Which stores the score matrix used in program `alignment.exe` and `semi_interval.exe`.  
 
 ***input format***
@@ -35,7 +35,7 @@ ATGC
 -1
 ```
 ***
-### `<x.txt>` `<y.txt>`  
+#### `<x.txt>` `<y.txt>`  
 > The file only contain `newline` and `<base>`, the program will ignore `newline` when read the sequence file.
 
 ***input example*** 
@@ -45,7 +45,7 @@ AATTCGTT
 TGGAAT
 ```
 ***
-### `<best interval.txt>`
+#### `<best interval.txt>`
 
 ***output format by*** *`semi_interval.exe`*
 ```txt
@@ -60,7 +60,7 @@ TGGAAT
 ```
 > If there are multiple lines, only the first line is consumed by `alignment.exe`
 ***
-### `<alignment.txt>` 
+#### `<alignment.txt>` 
 
 ***output example***
 ```txt
@@ -82,7 +82,6 @@ make clean
 ```
 > clean the program
 
-***
 ### run
 ```shell
 semi_interval.exe <x.txt> <y.txt> <best interval.txt> <score.txt>
@@ -177,7 +176,7 @@ make clean_tasks
 ```
 > clean alignments in tasks  
 ***
-### `score.json`  
+#### `score.json`  
 > This is very important, instead of `score.txt`, python scripts only allow `score.json`, but I think `score.json` is easier to edit.
 
 *example for DNA*
@@ -226,7 +225,7 @@ make clean_tasks
 * Python `3.10.4`
 
 ## Result  
-### `semi_interval.exe`  
+#### `semi_interval.exe`  
 ```shell
 X sequence: ../res/x.txt , Global interval=[1, 16641]
 Y sequence: ../res/y.txt , Global interval=[1, 118436]
@@ -237,12 +236,12 @@ Best interval saved in: ../res/best.txt
 Best score: -90273
 score= -90273; x=[1, 16641]; y=[1, 118436]
 ```
-### `cpu.exe`
+#### `cpu.exe`
 ```shell
 Time taken: 65.37s
 Best global alignment score: -90273
 ```
-### `alignment.exe`
+#### `alignment.exe`
 ```shell
 Load semi interval from ../res/best.txt , Index=0, Score=-90273
 X sequence: ../res/x.txt , Semi interval=[1, 16641]
