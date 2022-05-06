@@ -67,7 +67,7 @@ cpu.exe <x.txt> <y.txt> <score.txt>`
 * `<x.txt> <y.txt>` the files need to contain input sequence.  
 * `<score.txt>` score matrix store will be get from this file, see [Score matrix](#score-matrix)
 ## Python scripts
-You can use my python scripts which calculate alignment automatically. If you have many alignment to do, is useful.  
+You can use my python scripts which calculate alignment automatically in a specific file structure. If you have many alignment to do, it's useful.  
 
 ***File structure***
 ```shell
@@ -89,7 +89,7 @@ You can use my python scripts which calculate alignment automatically. If you ha
 │   │   └───x.txt
 │   │   └───y.txt
 ```
-*after command `make gpu_test`*  
+***after command `make gpu_test`***  
 
 ```shell
 ├───tasks
