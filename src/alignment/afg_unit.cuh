@@ -4,6 +4,7 @@
 #define AFG_UNIT_H
 
 #include "utils.cuh"
+#include "score.cuh"
 
 class res_unit{
 public:
@@ -42,7 +43,7 @@ public:
     res_unit m,x,y;
     
     __device__ res_unit to_m(byte _x,byte _y){
-        return max3(m,x,y)+score::gscore_matrix[score::n_device*_x+_y];
+        return max3(m,x,y)+score::match(_x,_y);
     }
     __device__ res_unit to_x(){// y have gap, mean x move
         return max3(m+score::g_device,x+score::e_device,y+score::g_device);

@@ -8,7 +8,7 @@
 
 void show_best_and_output_file(char* filename,res_unit_end* bests,int count,int xsize,int ysize,datatype best_score){
     std::fstream fs;
-    fs<<std::fixed<<std::setprecision(5);
+    fs<<std::fixed<<std::setprecision(FLOAT_PRECISION);
     fs.open(filename,std::ios::out);
     int k=0;
     for(int i=0;i<count;i++){
@@ -41,7 +41,7 @@ void show_best_and_output_file(char* filename,res_unit_end* bests,int count,int 
 }
 void show_best_and_output_file(char* filename,res_unit_end best,int xsize,int ysize){
     std::fstream fs;
-    fs<<std::fixed<<std::setprecision(5);
+    fs<<std::fixed<<std::setprecision(FLOAT_PRECISION);
     fs.open(filename,std::ios::out);
     datatype score=best.score;
     int xstart=1;

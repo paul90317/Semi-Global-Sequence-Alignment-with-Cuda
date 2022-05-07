@@ -1,7 +1,5 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#include <vector>
-
 
 //GPU 計算參數
 #define THREAD_SIZE 256 //最大 1024，最小 1
@@ -21,13 +19,16 @@
 //semi 設定
 #define X_FREE_START false
 #define X_FREE_END false
-#define Y_FREE_START false
+#define Y_FREE_START true
 #define Y_FREE_END false
 
 //分數設定
 typedef double datatype;//分數資料型態可改 double 或 int
 #define NEG_INF -10000000 //分數默認極小值，可改
-#define ERROR_FLOAT 0.05 //alignment.exe 最後做驗算時的服點數誤差
+
+//浮點數設定
+#define FLOAT_ERROR 0.05 //alignment.exe 最後做驗算時的服點數誤差
+#define FLOAT_PRECISION 5 //印出的浮點數位數
 
 //alignment 中斷點設定
 #define ALM_END_POINT_SIZE 60000ui64

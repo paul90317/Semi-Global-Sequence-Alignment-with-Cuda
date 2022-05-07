@@ -20,7 +20,7 @@ int* load_file(int* size,const char* filename){
     char c;
     while(c=getc(file),c!=EOF){
         if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9'))continue;
-        x_int[j+1]=mapping_Char(c);
+        x_int[j+1]=score::char2byte(c);
         j++;
     }
     *size=j;

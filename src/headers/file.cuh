@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "utils.cuh"
+#include "score.cuh"
 
 __host__ bool load_file(byte** p_gx,int* xsize,const char* filename){
     FILE* file=fopen(filename,"r");
@@ -16,7 +17,7 @@ __host__ bool load_file(byte** p_gx,int* xsize,const char* filename){
     int j=0;
     char c;
     while(c=my_get_ch(file),c!=EOF){
-        byte b=mapping_Char(c);
+        byte b=score::char2byte(c);
         if(b==(byte)-1){
             printf("Error: Char [%c] not found!!\n",c);
             exit(0);
@@ -42,7 +43,7 @@ __host__ bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r)
     for(int i=1;i<=r;){
         char c=my_get_ch(f);
         if(c==EOF)return false;
-        byte b=mapping_Char(c);
+        byte b=score::char2byte(c);
         if(b==(byte)-1)return false;
         if(i>=l)
             x_int[j++]=b;

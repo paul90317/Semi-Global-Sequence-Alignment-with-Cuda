@@ -1,6 +1,8 @@
 //2D DP 陣列的單元
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
+#include "config.h"
+#include "score.cuh"
 
 class res_unit{
 public:
@@ -13,6 +15,12 @@ public:
 #endif
     __all__ res_unit(){
         score=NEG_INF;
+    #if Y_FREE_START
+        ystart=1;
+    #endif
+    #if X_FREE_START
+        xstart=1;
+    #endif
     }
 #if X_FREE_START&&X_FREE_END&&Y_FREE_START&&Y_FREE_END
     __all__ res_unit(datatype _score,int _xstart,int _ystart){
@@ -87,8 +95,8 @@ class afg_unit{
 public:
     res_unit m,x,y;
     
-    __device__ res_unit to_m(int i,int j){
-        return max3(m,x,y)+score::gscore_matrix[score::n_device*i+j];
+    __device__ res_unit to_m(int _x,int _y){
+        return max3(m,x,y)+score::match(_x,_y);
     }
     __device__ res_unit to_x(){// y have gap, mean x move
         return max3(m+score::g_device,x+score::e_device,y+score::g_device);

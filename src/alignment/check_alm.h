@@ -17,8 +17,8 @@ bool check_alm(char* filename,byte* x,byte* y,datatype* alm_score){
         if(a==EOF)break;
         my_get_ch(file);//get space
         b=my_get_ch(file);
-        _x=mapping_Char(a);
-        _y=mapping_Char(b);
+        _x=score::char2byte(a);
+        _y=score::char2byte(b);
         if(_x==0){
             if(state!=1){
                 score+=score::g_host;

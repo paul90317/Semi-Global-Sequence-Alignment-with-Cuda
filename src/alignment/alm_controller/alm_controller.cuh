@@ -110,16 +110,16 @@ public:
             //std::cout<<now<<next<<"\n";
             switch(now){
             case pointer::tom:
-                _x=to_Char(cx[(i--)+ZERO(xl)]);
-                _y=to_Char(cy[(j--)+ZERO(yl)]);
+                _x=score::Char_map[cx[(i--)+ZERO(xl)]];
+                _y=score::Char_map[cy[(j--)+ZERO(yl)]];
                 break;
             case pointer::tox:
-                _x=to_Char(cx[(i--)+ZERO(xl)]);
+                _x=score::Char_map[cx[(i--)+ZERO(xl)]];
                 _y='-';
                 break;
             case pointer::toy:
                 _x='-';
-                _y=to_Char(cy[(j--)+ZERO(yl)]);
+                _y=score::Char_map[cy[(j--)+ZERO(yl)]];
                 break;
             }
             //std::cout<<_x<<_y<<"\n";

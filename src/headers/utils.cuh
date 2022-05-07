@@ -4,7 +4,6 @@
 #include "stdlib.h"
 #include <cstdio>
 #include "utils.h"
-#include "file.cuh"
 #define TID (blockDim.x*blockIdx.x+threadIdx.x)
 
 #define __all__ __device__ __host__

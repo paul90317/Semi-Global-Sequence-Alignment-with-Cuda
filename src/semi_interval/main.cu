@@ -8,6 +8,8 @@
 #include "layout.cuh"
 #include "macro.cuh"
 #include "test_time.h"
+#include "score.cuh"
+#include "file.cuh"
 
 #if END_MODE==0
 __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,int index_y,int xsize,int ysize)
@@ -30,20 +32,18 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,
     M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
     if(yid==0){
         M[xid].m=0;
-    }
-    if(yid==1){
-        M[xid].m.xstart=xid;
+        M[xid].m.xstart=xid+1;
         M[xid].y.xstart=xid+1;
     }
 #elif START_MODE==2
-    if(xid==0)return;
+    if(xid==0){
+        M[xid].x.ystart=yid+1;
+        M[xid].m.ystart=yid+1;
+        return;
+    }
     M[xid].x=M1[xid-1].to_x();
     M[xid].y=M1[xid].to_y();
     M[xid].m=M2[xid-1].to_m(x[xid],y[yid]);
-    if(xid==1){
-        M[xid].x.ystart=yid+1;
-        M[xid].m.ystart=yid;
-    }
 #elif START_MODE==3
     res_unit zero(0,xid+1,yid+1);
     M[xid].x=max2(M1[xid-1].to_x(),zero);
@@ -62,7 +62,7 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,byte* x,byte* y,
 }
 
 int main(int argc,char** argv){
-    std::cout<<std::fixed<<std::setprecision(5);
+    std::cout<<std::fixed<<std::setprecision(FLOAT_PRECISION);
     byte *gx_int,*gy_int;
     afg_unit *M,*M1,*M2,*GM,*GM1,*GM2;
     int xsize,ysize;

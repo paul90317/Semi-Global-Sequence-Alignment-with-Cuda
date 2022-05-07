@@ -18,13 +18,13 @@ namespace dfs{
         int xs=(xr-xl+1),ys=(yr-yl+1);
         if(xs<=0){
             for(int i=yl;i<=yr;i++){
-                print_alm(file,'-',to_Char(y_int[i]));
+                print_alm(file,'-',score::Char_map[y_int[i]]);
             }
             return;
         }
         if(ys<=0){
             for(int i=xl;i<=xr;i++){
-                print_alm(file,to_Char(x_int[i]),'-');
+                print_alm(file,score::Char_map[x_int[i]],'-');
             }
             return;
         }
@@ -37,11 +37,11 @@ namespace dfs{
         int xmid=tmp.xmid; 
         if(tmp.is_xbackgap){//y 對應到 x 後的 gap
             dfs(xl,xmid,yl,ymid-1,xgap);
-            print_alm(file,'-',to_Char(y_int[ymid]));;
+            print_alm(file,'-',score::Char_map[y_int[ymid]]);;
             dfs(xmid+1,xr,ymid+1,yr,true);
         }else{
             dfs(xl,xmid-1,yl,ymid-1,xgap);
-            print_alm(file,to_Char(x_int[xmid]),to_Char(y_int[ymid]));
+            print_alm(file,score::Char_map[x_int[xmid]],score::Char_map[y_int[ymid]]);
             dfs(xmid+1,xr,ymid+1,yr,false);
         }
         bscore=tmp.score;
@@ -49,18 +49,10 @@ namespace dfs{
 }
 
 bool is_same(datatype a,datatype b){
-    if(typeid(datatype)==typeid(float)){
-        return abs(a-b)<=ERROR_FLOAT;
-    }
-    if(typeid(datatype)==typeid(double)){
-        //std::cout<<std::fixed<<std::setprecision(5)<<a<<" "<<b<<"\n";
-        return abs(a-b)<=ERROR_FLOAT;
-    }
-    if(typeid(datatype)==typeid(long double)){
-        return abs(a-b)<=ERROR_FLOAT;
-    }
+if (typeid(datatype)==typeid(float) || typeid(datatype)==typeid(double) || typeid(datatype)==typeid(long double))
+    return abs(a-b)<=FLOAT_ERROR;
+else
     return a==b;
-    
 }
 
 int main(int argc,char** argv){
