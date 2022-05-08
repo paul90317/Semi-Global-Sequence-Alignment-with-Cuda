@@ -52,16 +52,17 @@ else
 }
 
 int main(int argc,char** argv){
+    std::cout<<"\n";
     if(argc!=6){
-        std::cout<<"Error: follow format => alignment.exe [x.txt] [y.txt] [best interval.txt] [score.txt] [alignment.txt]\n";
+        std::cout<<"error: follow format: alignment.exe <x.txt> <y.txt> <best interval.txt> <score.txt> <alignment.txt>\n";
         return 0;
     }
     //common
     if(!score::load(argv[4])){
-        std::cout<<"Error: can't load score matrix in "<<argv[4]<<"\n";
+        std::cout<<"error: can't load score matrix in "<<argv[4]<<"\n";
         exit(0);
     }else{
-        std::cout<<"loaded score matrix in "<<argv[4]<<"\n";
+        std::cout<<"score matrix: "<<argv[4]<<"\n";
     }
     sequence x,y;
     datatype interval_score;
@@ -71,14 +72,18 @@ int main(int argc,char** argv){
 
         //讀取 best interval
         if(!load_best_interval(argv[3],&interval_score,&xl,&xr,&yl,&yr)){
-            std::cout<<"Error: can't open best interval!!!\n";
+            std::cout<<"error: can't open best interval file\n";
             exit(0);
         }
-        std::cout<<"Load semi interval from "<<argv[3]<<" , Index=" <<DEFAULT_INTERVAL_INDEX<<", Score="<<interval_score<<"\n";
+        std::cout<<"interval: "<<argv[3]<<"\n";
+        std::cout<<" - index: " <<DEFAULT_INTERVAL_INDEX<<"\n";
+        std::cout<<" - score: " <<interval_score<<"\n";
         x=sequence(argv[1]).subseq(xl,xr-xl+1);
         y=sequence(argv[2]).subseq(yl,yr-yl+1);
-        std::cout<<"X sequence: "<<argv[1]<<" , Semi interval=["<<xl<<", "<<xr<<"]\n";
-        std::cout<<"Y sequence: "<<argv[2]<<" , Semi interval=["<<yl<<", "<<yr<<"]\n";
+        std::cout<<" - sequence X: "<<argv[1]<<"\n";
+        std::cout<<" -  - interval: ["<<xl<<", "<<xr<<"]\n";
+        std::cout<<" - sequence Y: "<<argv[2]<<"\n";
+        std::cout<<" -  - interval: ["<<yl<<", "<<yr<<"]\n";
     }
     
 
@@ -90,17 +95,20 @@ int main(int argc,char** argv){
     dfs::dfs(x,y,false);
     mytime::end();
     fclose(dfs::file);
-    std::cout<<"Best score: "<<dfs::bscore<<"\n";
+    std::cout<<"[OUTPUT]\n";
+    std::cout<<"best score: "<<dfs::bscore<<"\n";
     
     datatype chk_score;
     bool match=check_alm(argv[5],x,y,&chk_score);
     if(!match){
-        std::cout<<"error: the alignment don't match original sequences!!!\n";
+        std::cout<<"error: the alignment don't match original sequences\n";
+        exit(0);
     }else{
-        std::cout<<"The score of alignment "<<argv[5]<<" is "<<chk_score<<"\n";
+        std::cout<<"alignment: "<<argv[5]<<"\n";
+        std::cout<<" - score: "<<chk_score<<"\n";
     }
     if(!is_same(dfs::bscore,interval_score)||!is_same(dfs::bscore,chk_score)){
-        std::cout<<"error: the score is not the same!!!\n";
+        std::cout<<"error: the score is not the same\n";
     }
 }
 

@@ -14,10 +14,6 @@
 #define max3(a,b,c) max2((a),(max2((b),(c))))
 #define TID (blockDim.x*blockIdx.x+threadIdx.x)
 
-#define __all__ __device__ __host__
-#define _single <<<1,1>>>
-#define _kernel(nb,nt) <<<(nb),(nt)>>>
-
 template<typename T>
 T* oalloc(int count){
     return (T*)malloc(count*sizeof(T));
@@ -93,10 +89,18 @@ bool load_best_interval(char* filename,datatype* score,int* xl,int* xr,int* yl,i
     return true;
 }
 
-int thread_assign(int size,int* nblock,int*nthread){
+inline int thread_assign(int size,int* nblock,int*nthread){
     *nthread=min(size,THREAD_SIZE);
     *nblock=(size/THREAD_SIZE)+((size%THREAD_SIZE)>0);
     return (*nblock)*(*nthread);
 }
+
+inline int bound_assign(int xsize,int ysize,int offset_y,int *offset_t){
+    *offset_t=max(offset_y-ysize,0);
+    xsize=xsize-*offset_t+1;
+    ysize=min(ysize,offset_y)+1;
+    return min(xsize,ysize);
+}
+
 #endif
 #endif // COMM_

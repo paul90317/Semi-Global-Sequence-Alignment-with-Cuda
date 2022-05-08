@@ -17,8 +17,8 @@ public:
     }
 };
 
-__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,sequence gx,sequence gy,int offset_y,trace_unit* trace) {
-    int tid=TID;
+__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,sequence gx,sequence gy,int offset_y,int offset_t,trace_unit* trace) {
+    int tid=TID+offset_t;
     int xid=tid;
     int yid=offset_y-tid;
     if((xid<0)||(yid<0)||(xid>gx.size())||(yid>gy.size()))return;
@@ -46,10 +46,12 @@ private:
             }
             assign_alm(GM1,temp);
         }
-        int nb,nt;
+        int nb,nt,tneed,off_t=0;
         thread_assign(x.size()+1,&nb,&nt);
         for(int off_y=1;off_y-x.size()<=y.size();off_y++){
-            calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,gtrace_back);
+            /*tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
+            thread_assign(tneed,&nb,&nt);*/
+            calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,off_t,gtrace_back);
             cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1,GM,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
         }

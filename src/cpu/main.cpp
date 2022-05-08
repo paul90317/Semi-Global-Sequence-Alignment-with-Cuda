@@ -35,21 +35,28 @@ int* load_file(int* size,const char* filename){
 int main(int argc,char** argv){
     int *x,*y;
     int xsize,ysize;
+    std::cout<<"\n";
     if(argc!=4){
-        std::cout<<"Error: follow format => cpu.exe [x.txt] [y.txt] [score.txt]\n";
+        std::cout<<"error: follow format: cpu.exe <x.txt> <y.txt> <score.txt>\n";
+        exit(0);
     }
     if(!score::load(argv[3])){
-        std::cout<<"Error: can't load score matrix in "<<argv[3]<<"\n";
+        std::cout<<"error: can't load score matrix in "<<argv[3]<<"\n";
         exit(0);
     }else{
-        std::cout<<"loaded score matrix in "<<argv[3]<<"\n";
+        std::cout<<"score matrix: "<<argv[3]<<"\n";
     }
     x=load_file(&xsize,argv[1]);
     y=load_file(&ysize,argv[2]);
     if(!x||!y){
-        std::cout<<"can't open file.\n";
+        std::cout<<"error: can't open sequence file.\n";
         return 0;
     }
+    std::cout<<"sequence X: "<<argv[1]<<"\n";
+    std::cout<<" - size: "<<xsize<<"\n";
+    std::cout<<"sequence Y: "<<argv[2]<<"\n";
+    std::cout<<" - size: "<<ysize<<"\n";
+
     afg_unit* M=new afg_unit[2*(xsize+2)];
     M+=2;
 
@@ -73,7 +80,8 @@ int main(int argc,char** argv){
     }
     
     mytime::end();
+    std::cout<<"[OUTPUT]\n";
     datatype best=M[dimcf(0,xsize)].result();
-    std::cout<<"Best global alignment score: "<<best<<"\n";
+    std::cout<<"best score: "<<best<<"\n";
 }
 

@@ -31,7 +31,10 @@ void show_best_and_output_file(char* filename,res_unit_end* bests,int count,int 
     #if Y_FREE_END
         yend=best.yend;
     #endif
-        if(k<BEST_SHOW_NUMBER)std::cout<<"score= "<<score<<"; x=["<<xstart<<", "<<xend<<"]; y=["<<ystart<<", "<<yend<<"]\n";
+        if(k<BEST_SHOW_NUMBER){
+            std::cout<<"inteval: "<<"X=["<<xstart<<", "<<xend<<"] Y=["<<ystart<<", "<<yend<<"]\n";
+            std::cout<<" - score: "<<score<<"\n";
+        }
         if(k==BEST_SHOW_NUMBER)std::cout<<"...\n";
         k++;
         
@@ -60,7 +63,8 @@ void show_best_and_output_file(char* filename,res_unit_end best,int xsize,int ys
 #if Y_FREE_END
     yend=best.yend;
 #endif
-    std::cout<<"score= "<<score<<"; x=["<<xstart<<", "<<xend<<"]; y=["<<ystart<<", "<<yend<<"]\n";
+    std::cout<<"inteval: "<<"X=["<<xstart<<", "<<xend<<"] Y=["<<ystart<<", "<<yend<<"]\n";
+    std::cout<<" - score: "<<score<<"\n";
     fs<<score<<" "<<xstart<<" "<<xend<<" "<<ystart<<" "<<yend<<"\n";
     fs.close();
 }

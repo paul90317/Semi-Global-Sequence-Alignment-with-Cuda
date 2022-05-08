@@ -60,7 +60,7 @@ namespace score{
         int sz=sizeof(datatype)*(n+1)*(n+1);
         cudaMalloc(&t1,sz);
         cudaMemcpy(t1,score_matrix,sz,cudaMemcpyHostToDevice);
-        _gscore_matrix_load<<<1,1>>>(t1,n,g_host,e_host);
+        _gscore_matrix_load _single(t1,n,g_host,e_host);
     #endif
         return true;
     }

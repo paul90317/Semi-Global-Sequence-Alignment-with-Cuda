@@ -11,7 +11,7 @@ namespace mytime {
         
     }
     void end(){
-        printf("\nTime taken: %.2fs\n", (double)(clock() - protected_space::tStart)/CLOCKS_PER_SEC);
+        printf("\ntime taken: %.2fs\n\n", (double)(clock() - protected_space::tStart)/CLOCKS_PER_SEC);
     }
 }
 

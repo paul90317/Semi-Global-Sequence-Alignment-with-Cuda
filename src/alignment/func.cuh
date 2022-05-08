@@ -81,11 +81,11 @@ bool check_alm(char* filename,sequence x,sequence y,datatype* alm_score){
             state=0;
             score+=score::score_matrix[_x*score::n_host+_y];
             if(_x!=x.cget(xid++)){
-                printf("error mis match: [xid= %d, lineno= %d]\n",xid-1,lineno);
+                printf("error: mis match: [xid= %d, lineno= %d]\n",xid-1,lineno);
                 return false;
             }
             if(_y!=y.cget(yid++)){
-                printf("error mis match: [yid= %d, lineno= %d]\n",yid-1,lineno);
+                printf("error: mis match: [yid= %d, lineno= %d]\n",yid-1,lineno);
                 return false;
             }
         }

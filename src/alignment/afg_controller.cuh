@@ -7,8 +7,8 @@
 #include "comm.cuh"
 #include "sequence.cuh"
 
-__global__ static void calculate(afg_unit*GM,afg_unit*GM1,afg_unit*GM2,sequence gx,sequence gy,int off_y,int ymid) {
-    int tid=TID;
+__global__ static void calculate(afg_unit*GM,afg_unit*GM1,afg_unit*GM2,sequence gx,sequence gy,int off_y,int off_t,int ymid) {
+    int tid=TID+off_t;
     int xid=tid;
     int yid=off_y-tid;
     if((xid<0)||(yid<0)||(xid>gx.size())||(yid>gy.size()))return;
@@ -40,10 +40,12 @@ private:
             }
             assign_afg(GM1,temp);
         }
-        int nb,nt;
+        int nb,nt,tneed,off_t=0;
         thread_assign(x.size()+1,&nb,&nt);
         for(int off_y=1;off_y-x.size()<=y.size();off_y++){
-            calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,ymid);
+            /*tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
+            thread_assign(tneed,&nb,&nt);*/
+            calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,off_t,ymid);
             cudaMemcpy(GM2,GM1,sizeof(afg_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1,GM,sizeof(afg_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
         }

@@ -5,7 +5,7 @@
 #define THREAD_SIZE 256 //最大 1024，最小 1
 
 //最佳區間的儲存設定
-#define BEST_STACK_SIZE 1000 //能儲存的最好解的最大值(最小1)，
+#define BEST_STACK_SIZE 30 //能儲存的最好解的最大值(最小1)，
 #define SAFE_PUSH_MODE true //程式是否判定是否超過上限
 #define BEST_DIFF 1 //定義與最佳比對分數少多少的上限，超過可以推入最佳解 stack
 
@@ -31,6 +31,6 @@ typedef double datatype;//分數資料型態可改 double 或 int
 #define FLOAT_PRECISION 5 //印出的浮點數位數
 
 //alignment 中斷點設定
-#define ALM_END_POINT_SIZE 60000ui64
+#define ALM_END_POINT_SIZE 6000ui64
 
 #endif
