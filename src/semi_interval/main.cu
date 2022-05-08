@@ -14,7 +14,7 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,sequence x,seque
 #endif
 {
     int xid=TID;
-    int yid=offset_y-xid-1;
+    int yid=offset_y-xid;
     if(xid<0||yid<0||xid>x.size()||yid>y.size())return;
 #if START_MODE==0
     M[xid].x=M1[xid-1].to_x();
@@ -114,7 +114,7 @@ int main(int argc,char** argv){
 
     //分支
     mytime::start();
-    for(int offset_y=2;Y_NOT_END(offset_y,x.size(),y.size());offset_y++){
+    for(int offset_y=1;offset_y-x.size()<=y.size();offset_y++){
         #if (END_MODE==0)
             calculate<<<nblock,nthread>>>(GM,GM1,GM2,x,y,offset_y);
         #elif (END_MODE==3)

@@ -19,7 +19,7 @@
 //semi 設定
 #define X_FREE_START false
 #define X_FREE_END false
-#define Y_FREE_START true
+#define Y_FREE_START false
 #define Y_FREE_END false
 
 //分數設定

@@ -20,7 +20,7 @@ public:
 __global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,sequence gx,sequence gy,int offset_y,trace_unit* trace) {
     int tid=TID;
     int xid=tid;
-    int yid=offset_y-tid-1;
+    int yid=offset_y-tid;
     if((xid<0)||(yid<0)||(xid>gx.size())||(yid>gy.size()))return;
     trace_unit tu;
     GM[tid].x=GM1[tid-1].to_x(&tu);
@@ -48,7 +48,7 @@ private:
         }
         int nb,nt;
         thread_assign(x.size()+1,&nb,&nt);
-        for(int off_y=2;(off_y-x.size()-1)<=y.size();off_y++){
+        for(int off_y=1;off_y-x.size()<=y.size();off_y++){
             calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,gtrace_back);
             cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1,GM,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
