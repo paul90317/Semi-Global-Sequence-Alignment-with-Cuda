@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
+#include "comm.cuh"
 #include "afg_unit.h"
-#include "test_time.h"
 
 #define dimcf(st,i) ((st)+(i)*2)
 
@@ -18,9 +18,13 @@ int* load_file(int* size,const char* filename){
     x_int[0]=0;
     int j=0;
     char c;
-    while(c=getc(file),c!=EOF){
-        if((c>'z'||c<'a')&&(c<'A'||c>'Z')&&(c<'0'||c>'9'))continue;
-        x_int[j+1]=score::char2byte(c);
+    while(c=my_get_ch(file),c!=EOF){
+        byte b=score::char2byte(c);
+        if(b==(byte)-1){
+            printf("Error: Char [%c] not found!!\n",c);
+            exit(0);
+        }
+        x_int[j+1]=b;
         j++;
     }
     *size=j;
@@ -49,7 +53,7 @@ int main(int argc,char** argv){
     afg_unit* M=new afg_unit[2*(xsize+2)];
     M+=2;
 
-    time_start();
+    mytime::start();
     //初始化
     M[dimcf(0,0)].m=0;
     for(int i=1;i<=xsize;i++){
@@ -68,7 +72,7 @@ int main(int argc,char** argv){
         }
     }
     
-    time_end();
+    mytime::end();
     datatype best=M[dimcf(0,xsize)].result();
     std::cout<<"Best global alignment score: "<<best<<"\n";
 }

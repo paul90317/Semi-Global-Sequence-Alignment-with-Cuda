@@ -3,9 +3,8 @@
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
 
-#include "utils.h"
 #include "config.h"
-#include "score.cuh"
+#include "comm.cuh"
 
 class afg_unit{
 public:

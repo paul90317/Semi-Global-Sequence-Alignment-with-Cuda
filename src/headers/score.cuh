@@ -1,12 +1,7 @@
 #ifndef SCORE_H
 #define SCORE_H
-#include "config.h"
-#include <fstream>
-#ifndef CPU
-#include "utils.cuh"
-#endif
-#include "utils.h"
 
+#include "type.h"
 
 namespace score{
     char* Char_map;

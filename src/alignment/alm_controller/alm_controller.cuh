@@ -3,9 +3,8 @@
 
 #include "alm_unit.cuh"
 #include "config.h"
-#include "utils.cuh"
-#include "macro.cuh"
-#include <stack>
+#include "func.cuh"
+#include "sequence.cuh"
 
 #define dimcf(i,j) ((i)*ALM_END_POINT_SIZE+(j))
 
@@ -18,66 +17,45 @@ public:
     }
 };
 
-namespace protected_space{
-    __global__ static void _alm_assign(alm_unit* garr,alm_unit value,int count){
-        int tid=TID;
-        if(tid>=count)return;
-        garr[tid]=value;
-    }
-}
-
-static inline void alm_assign(alm_unit* garr,alm_unit value,int count){
-    int nb,nt;
-    thread_assign(count,&nb,&nt);
-    protected_space::_alm_assign _kernel(nb,nt)(garr,value,count);
-}
-
-__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,byte* gx,byte* gy,int xl,int xr,int yl,int yr,int ymover,trace_unit* trace) {
+__global__ static void calculate(alm_unit*GM,alm_unit*GM1,alm_unit*GM2,sequence gx,sequence gy,int offset_y,trace_unit* trace) {
     int tid=TID;
-    int xid=tid+ZERO(xl);
-    int yid=ymover-tid-1;
-    if((xid<ZERO(xl))||(yid<ZERO(yl))||(xid>xr)||(yid>yr))return;
-    byte _x=gx[xid];
-    byte _y=gy[yid];
+    int xid=tid;
+    int yid=offset_y-tid-1;
+    if((xid<0)||(yid<0)||(xid>gx.size())||(yid>gy.size()))return;
     trace_unit tu;
     GM[tid].x=GM1[tid-1].to_x(&tu);
     GM[tid].y=GM1[tid].to_y(&tu);
-    GM[tid].m=GM2[tid-1].to_m(_x,_y,&tu);
-    trace[dimcf(tid,yid-ZERO(yl))]=tu;
+    GM[tid].m=GM2[tid-1].to_m(gx.gget(xid),gy.gget(yid),&tu);
+    trace[dimcf(xid,yid)]=tu;
 }
 
 class alm_controller{
 private:
     alm_unit *GM,*GM1,*GM2;
     trace_unit *gtrace_back,*ctrace_back;
-    byte *gx,*gy,*cx,*cy;
-    __host__ void initM(int l,int r,bool xbackgap){
-        int cnt=r-l+3;
-        alm_unit au;
-        alm_assign(GM-1,au,cnt);
-        alm_assign(GM1-1,au,cnt);
-        alm_assign(GM2-1,au,cnt);
-        if(xbackgap){
-            au.y=0;
-        }else{
-            au.m=0;
+    __host__ void dp(sequence x, sequence y,bool xbackgap){
+        {
+            alm_unit temp;
+            assign_alm(GM-1,temp,x.size()+2);
+            assign_alm(GM1-1,temp,x.size()+2);
+            assign_alm(GM2-1,temp,x.size()+2);
+            if(xbackgap){
+                temp.y=0;
+            }else{
+                temp.m=0;
+            }
+            assign_alm(GM1,temp);
         }
-        alm_assign(GM1,au,1);
-    }
-    __host__ void dp(int xl,int xr,int yl,int yr,bool xbackgap){
-        initM(xl,xr,xbackgap);
-        int xsize=xr-xl+1;
         int nb,nt;
-        thread_assign(xsize+1,&nb,&nt);
-        for(int ymover=ZERO(yl)+2;Y_NOT_END(ymover,xsize,yr);ymover++){
-            calculate _kernel(nb,nt)(GM,GM1,GM2,gx,gy,xl,xr,yl,yr,ymover,gtrace_back);
-            cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
-            cudaMemcpy(GM1,GM,sizeof(alm_unit)*(xsize+1),cudaMemcpyDeviceToDevice);
+        thread_assign(x.size()+1,&nb,&nt);
+        for(int off_y=2;(off_y-x.size()-1)<=y.size();off_y++){
+            calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,gtrace_back);
+            cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
+            cudaMemcpy(GM1,GM,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
         }
     }
 public:
-    __host__ alm_controller(){};
-    __host__ alm_controller(byte*_gx,byte*_gy,byte* _cx,byte* _cy){
+    __host__ alm_controller(){
         int len=(ALM_END_POINT_SIZE+1);
         cudaMalloc(&GM, len*sizeof(alm_unit));
         cudaMalloc(&GM1, len*sizeof(alm_unit));
@@ -87,42 +65,34 @@ public:
         GM++;
         GM1++;
         GM2++;
-        gx=_gx;
-        gy=_gy;
-        cx=_cx;
-        cy=_cy;
     }
-    __host__ datatype cal_out_trace_back(FILE* file,int xl,int xr,int yl,int yr,bool xbackgap){
-        dp(xl,xr,yl,yr,xbackgap);
+    __host__ datatype cal_out_trace_back(FILE* file,sequence x,sequence y,bool xbackgap){
+        dp(x,y,xbackgap);
         cudaMemcpy(ctrace_back,gtrace_back,ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit),cudaMemcpyDeviceToHost);
-        int xsz=xr-xl+1;
-        int ysz=yr-yl+1;
         pointer now,next;
         alm_unit tmp;
-        cudaMemcpy(&tmp,GM+xsz,sizeof(alm_unit),cudaMemcpyDeviceToHost);
+        cudaMemcpy(&tmp,GM+x.size(),sizeof(alm_unit),cudaMemcpyDeviceToHost);
         datatype ret=tmp.result(&now);
-        int i=xsz;
-        int j=ysz;
+        int i=x.size();
+        int j=y.size();
         char _x,_y;
         std::stack<cpair> st;
         while(i||j){
             next=ctrace_back[dimcf(i,j)].next(now);
-            //std::cout<<now<<next<<"\n";
             switch(now){
             case pointer::tom:
-                _x=score::Char_map[cx[(i--)+ZERO(xl)]];
-                _y=score::Char_map[cy[(j--)+ZERO(yl)]];
+                _x=score::Char_map[x.cget(i--)];
+                _y=score::Char_map[y.cget(j--)];
                 break;
             case pointer::tox:
-                _x=score::Char_map[cx[(i--)+ZERO(xl)]];
+                _x=score::Char_map[x.cget(i--)];
                 _y='-';
                 break;
             case pointer::toy:
                 _x='-';
-                _y=score::Char_map[cy[(j--)+ZERO(yl)]];
+                _y=score::Char_map[y.cget(j--)];
                 break;
             }
-            //std::cout<<_x<<_y<<"\n";
             now=next;
             st.push(cpair(_x,_y));
         }
@@ -131,18 +101,6 @@ public:
             st.pop();
             print_alm(file,cp.x,cp.y);
         }
-        /*for(int i=0;i<=xsz;i++){
-            for(int j=0;j<=ysz;j++){
-                trace_unit tu=ctrace_back[dimcf(i,j)];
-                std::cout<<tu.m<<tu.y<<" ";
-            }
-            std::cout<<"\n";
-            for(int j=0;j<=ysz;j++){
-                trace_unit tu=ctrace_back[dimcf(i,j)];
-                std::cout<<tu.x<<"  ";
-            }
-            std::cout<<"\n";
-        }*/
         return ret;
     }   
 };

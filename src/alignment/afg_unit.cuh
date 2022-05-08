@@ -3,7 +3,8 @@
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
 
-#include "utils.cuh"
+#include "config.h"
+#include "comm.cuh"
 #include "score.cuh"
 
 class res_unit{

@@ -3,6 +3,7 @@
 #define AFG_UNIT_H
 #include "config.h"
 #include "score.cuh"
+#include "comm.cuh"
 
 class res_unit{
 public:
@@ -22,7 +23,7 @@ public:
         xstart=1;
     #endif
     }
-#if X_FREE_START&&X_FREE_END&&Y_FREE_START&&Y_FREE_END
+#if X_FREE_START&&Y_FREE_START
     __all__ res_unit(datatype _score,int _xstart,int _ystart){
         score=_score;
         xstart=_xstart;
@@ -45,6 +46,9 @@ public:
     }
     __all__ bool operator<=(datatype x){
         return score<=x;
+    }
+    __all__ bool operator>=(datatype x){
+        return score>=x;
     }
 };
 

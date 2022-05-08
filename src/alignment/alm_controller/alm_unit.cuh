@@ -1,9 +1,6 @@
 #ifndef ALM_UNIT_H
 #define ALM_UNIT_H
-#include "config.h"
-#include "utils.cuh"
-#include <cstdio>
-#include <iostream>
+#include "comm.cuh"
 
 enum pointer:byte{
     tom,tox,toy,none    
@@ -54,7 +51,7 @@ public:
         x=NEG_INF;
         y=NEG_INF;
     }
-    __device__ datatype to_m(int _x,int _y,trace_unit *from){
+    __device__ datatype to_m(byte _x,byte _y,trace_unit *from){
         datatype ret;
         if(m>x&&m>y){
             from->set_m(pointer::tom);
@@ -66,7 +63,7 @@ public:
             from->set_m(pointer::toy);
             ret=y;
         }
-        return ret+score::gscore_matrix[score::n_device*_x+_y];
+        return ret+score::match(_x,_y);
     }
     __device__ datatype to_x(trace_unit *from){
         datatype _m=m+score::g_device;

@@ -1,12 +1,39 @@
-#ifndef FILE_H
-#define FILE_H
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include "utils.cuh"
+#ifndef COMM_H
+#define COMM_H
+
+#include "config.h"
+#include "test_time.h"
+#include "type.h"
 #include "score.cuh"
 
-__host__ bool load_file(byte** p_gx,int* xsize,const char* filename){
+#include <cstring>
+#include <iostream>
+#include <fstream>
+
+#define max2(a,b) (((a)>(b))?(a):(b))
+#define max3(a,b,c) max2((a),(max2((b),(c))))
+#define TID (blockDim.x*blockIdx.x+threadIdx.x)
+
+#define __all__ __device__ __host__
+#define _single <<<1,1>>>
+#define _kernel(nb,nt) <<<(nb),(nt)>>>
+
+template<typename T>
+T* oalloc(int count){
+    return (T*)malloc(count*sizeof(T));
+}
+
+char my_get_ch(FILE* file){
+    char c;
+    while(true){
+        c=getc(file);
+        if(c==EOF)return c;
+        if(c<32)continue;
+        return c;
+    }
+}
+#ifndef CPU
+bool load_file(byte** p_gx,int* xsize,const char* filename){
     FILE* file=fopen(filename,"r");
     if(file==NULL)return false;
     fseek(file,0,SEEK_END);
@@ -33,7 +60,7 @@ __host__ bool load_file(byte** p_gx,int* xsize,const char* filename){
     return true;
 }
 
-__host__ bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r){
+bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r){
     FILE* f=fopen(filename,"r");
     if(f==NULL)return false;
     int sz=r-l+2;
@@ -56,7 +83,7 @@ __host__ bool load_file(byte** p_gx,byte** p_x,const char* filename,int l,int r)
     return true;
 }
 
-__host__ bool load_best_interval(char* filename,datatype* score,int* xl,int* xr,int* yl,int* yr){
+bool load_best_interval(char* filename,datatype* score,int* xl,int* xr,int* yl,int* yr){
     std::fstream fs;
     fs.open(filename,std::ios::in);
     if(!fs)return false;
@@ -66,4 +93,10 @@ __host__ bool load_best_interval(char* filename,datatype* score,int* xl,int* xr,
     return true;
 }
 
+int thread_assign(int size,int* nblock,int*nthread){
+    *nthread=min(size,THREAD_SIZE);
+    *nblock=(size/THREAD_SIZE)+((size%THREAD_SIZE)>0);
+    return (*nblock)*(*nthread);
+}
 #endif
+#endif // COMM_
