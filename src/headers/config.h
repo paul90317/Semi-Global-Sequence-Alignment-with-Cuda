@@ -1,36 +1,34 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-//GPU 計算參數
-#define THREAD_SIZE 256 //最大 1024，最小 1
+//GPU calculation
+#define THREAD_SIZE 128 //thread size (>=1,<=1024)
 
-//最佳區間的儲存設定
-#define BEST_STACK_SIZE 30 //能儲存的最好解的最大值(最小1)，
-#define SAFE_PUSH_MODE true //程式是否判定是否超過上限
-#define BEST_DIFF 1 //定義與最佳比對分數少多少的上限，超過可以推入最佳解 stack
+//best interval stack
+#define BEST_STACK_SIZE 30 //how many intervals can the best stack store (>=1)
+#define SAFE_PUSH_MODE true //should detect the best stack is full
+#define BEST_DIFF 1 //upper bound that how much less than the optimal alignment score can alignment be pushed into the optimal solution stack
 
-//顯示設定
-#define BEST_SHOW_NUMBER 3 //指定 semi_interval.exe 顯示多少區間
+//how many intervals should show.(semi_interval.exe)
+#define BEST_SHOW_NUMBER 3
 
-//比對目標
-#define DEFAULT_INTERVAL_INDEX 0 //指定 alignment.exe 對哪一條區間進行比對，從 0 開始
-//腳本 script.py 會幫忙測試所有區間，此項已經不必修改
+#define DEFAULT_INTERVAL_INDEX 0 //which interval used by alignment.exe, just set to 0.
 
-//semi 設定
+//semi global settings for semi_interval.exe
 #define X_FREE_START false
 #define X_FREE_END false
 #define Y_FREE_START false
 #define Y_FREE_END false
 
-//分數設定
-typedef double datatype;//分數資料型態可改 double 或 int
-#define NEG_INF -10000000 //分數默認極小值，可改
+//score matrix
+typedef double datatype;//The data type of the score matrix, recommended double and int
+#define NEG_INF -10000000 // the negative infinity value of the score
 
-//浮點數設定
-#define FLOAT_ERROR 0.05 //alignment.exe 最後做驗算時的服點數誤差
-#define FLOAT_PRECISION 5 //印出的浮點數位數
+//float number
+#define FLOAT_ERROR 0.05 //if the result difference in this value, it's ok. (alignment.exe)
+#define FLOAT_PRECISION 5 //how many precision of best score should be outputed. (semi_interval.exe)
 
-//alignment 中斷點設定
-#define ALM_END_POINT_SIZE 6000ui64
+//alignment.exe return point.
+#define ALM_END_POINT_SIZE 60000ui64 //how small the sub sequence does DFS call 2D alignment.
 
 #endif

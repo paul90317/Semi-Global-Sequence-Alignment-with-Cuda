@@ -41,10 +41,10 @@ private:
             assign_afg(GM1,temp);
         }
         int nb,nt,tneed,off_t=0;
-        thread_assign(x.size()+1,&nb,&nt);
+        //thread_assign(x.size()+1,&nb,&nt);
         for(int off_y=1;off_y-x.size()<=y.size();off_y++){
-            /*tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
-            thread_assign(tneed,&nb,&nt);*/
+            tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
+            thread_assign(tneed,&nb,&nt);
             calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,off_t,ymid);
             cudaMemcpy(GM2,GM1,sizeof(afg_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1,GM,sizeof(afg_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);

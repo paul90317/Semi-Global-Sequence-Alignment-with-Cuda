@@ -29,6 +29,7 @@ namespace score{
     }
 #endif
     bool load(char* filename){//一定要做一次，將計分數導入 GPU 記憶體
+        double temp;
         char buf[10000];
         std::fstream fs;
         fs.open(filename,std::ios::in);
@@ -49,18 +50,21 @@ namespace score{
         for(int i=1;i<=n;i++){
             score_matrix[(n+1)*i]=NEG_INF;
             for(int j=1;j<=n;j++){
-                fs>>score_matrix[(n+1)*i+j];
+                fs>>temp;
+                score_matrix[(n+1)*i+j]=temp;
             }
         }
-        fs>>g_host;
-        fs>>e_host;
-        n_host=++n;
+        fs>>temp;
+        g_host=temp;
+        fs>>temp;
+        e_host=temp;
+        n_host=n+1;
     #ifndef CPU
         datatype *t1;
         int sz=sizeof(datatype)*(n+1)*(n+1);
         cudaMalloc(&t1,sz);
         cudaMemcpy(t1,score_matrix,sz,cudaMemcpyHostToDevice);
-        _gscore_matrix_load _single(t1,n,g_host,e_host);
+        _gscore_matrix_load _single(t1,n_host,g_host,e_host);
     #endif
         return true;
     }

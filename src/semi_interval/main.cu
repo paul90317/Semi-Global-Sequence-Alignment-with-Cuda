@@ -115,11 +115,11 @@ int main(int argc,char** argv){
 
     int nthread,nblock;
     int thread_needed,offset_t=0;
-    thread_assign(x.size()+1,&nblock,&nthread);
+    //thread_assign(x.size()+1,&nblock,&nthread);
     mytime::start();
     for(int offset_y=1;offset_y-x.size()<=y.size();offset_y++){
-        /*thread_needed=bound_assign(x.size(),y.size(),offset_y,&offset_t);
-        thread_assign(thread_needed,&nblock,&nthread);*/
+        thread_needed=bound_assign(x.size(),y.size(),offset_y,&offset_t);
+        thread_assign(thread_needed,&nblock,&nthread);
         #if (END_MODE==0)
             calculate _kernel(nblock,nthread)(GM,GM1,GM2,x,y,offset_y,offset_t);
         #elif (END_MODE==3)

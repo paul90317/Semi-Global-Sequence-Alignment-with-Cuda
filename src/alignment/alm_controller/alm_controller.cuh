@@ -6,7 +6,10 @@
 #include "func.cuh"
 #include "sequence.cuh"
 
-#define dimcf(i,j) ((i)*ALM_END_POINT_SIZE+(j))
+__all__
+inline long long unsigned int dimcf(long long unsigned int i,long long unsigned int j,long long unsigned int hsize=ALM_END_POINT_SIZE+1){
+    return i*hsize+j;
+}
 
 class cpair{
 public:
@@ -33,6 +36,8 @@ class alm_controller{
 private:
     alm_unit *GM,*GM1,*GM2;
     trace_unit *gtrace_back,*ctrace_back;
+    long long unsigned int matrix_size;
+    long long unsigned int end_size;
     __host__ void dp(sequence x, sequence y,bool xbackgap){
         {
             alm_unit temp;
@@ -47,10 +52,10 @@ private:
             assign_alm(GM1,temp);
         }
         int nb,nt,tneed,off_t=0;
-        thread_assign(x.size()+1,&nb,&nt);
+        //thread_assign(x.size()+1,&nb,&nt);
         for(int off_y=1;off_y-x.size()<=y.size();off_y++){
-            /*tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
-            thread_assign(tneed,&nb,&nt);*/
+            tneed=bound_assign(x.size(),y.size(),off_y,&off_t);
+            thread_assign(tneed,&nb,&nt);
             calculate _kernel(nb,nt)(GM,GM1,GM2,x,y,off_y,off_t,gtrace_back);
             cudaMemcpy(GM2,GM1,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
             cudaMemcpy(GM1,GM,sizeof(alm_unit)*(x.size()+1),cudaMemcpyDeviceToDevice);
@@ -58,19 +63,20 @@ private:
     }
 public:
     __host__ alm_controller(){
-        int len=(ALM_END_POINT_SIZE+1);
-        cudaMalloc(&GM, len*sizeof(alm_unit));
-        cudaMalloc(&GM1, len*sizeof(alm_unit));
-        cudaMalloc(&GM2, len*sizeof(alm_unit));
-        cudaMalloc(&gtrace_back,ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit));
-        ctrace_back=(trace_unit*)malloc(ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit));
+        end_size=ALM_END_POINT_SIZE;
+        cudaMalloc(&GM, (end_size+2)*sizeof(alm_unit));
+        cudaMalloc(&GM1, (end_size+2)*sizeof(alm_unit));
+        cudaMalloc(&GM2, (end_size+2)*sizeof(alm_unit));
+        matrix_size=(end_size+1)*(end_size+1);
+        cudaMalloc(&gtrace_back,matrix_size*sizeof(trace_unit));
+        ctrace_back=(trace_unit*)malloc(matrix_size*sizeof(trace_unit));
         GM++;
         GM1++;
         GM2++;
     }
     __host__ datatype cal_out_trace_back(FILE* file,sequence x,sequence y,bool xbackgap){
         dp(x,y,xbackgap);
-        cudaMemcpy(ctrace_back,gtrace_back,ALM_END_POINT_SIZE*ALM_END_POINT_SIZE*sizeof(trace_unit),cudaMemcpyDeviceToHost);
+        cudaMemcpy(ctrace_back,gtrace_back,matrix_size*sizeof(trace_unit),cudaMemcpyDeviceToHost);
         pointer now,next;
         alm_unit tmp;
         cudaMemcpy(&tmp,GM+x.size(),sizeof(alm_unit),cudaMemcpyDeviceToHost);

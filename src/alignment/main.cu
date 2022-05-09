@@ -24,7 +24,11 @@ namespace dfs{
             }
             return;
         }
-        if(x.size()<ALM_END_POINT_SIZE&&y.size()<ALM_END_POINT_SIZE){
+        if(x.size()==1&&y.size()==1){
+            print_alm(file,score::Char_map[x.cget(1)],score::Char_map[y.cget(1)]);
+            return;
+        }
+        if(x.size()<=ALM_END_POINT_SIZE&&y.size()<=ALM_END_POINT_SIZE){
             bscore=alm_c->cal_out_trace_back(file,x,y,xgap);
             return;
         }
