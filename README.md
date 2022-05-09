@@ -134,7 +134,7 @@ You can use my python scripts which calculate alignment automatically in a speci
 │   │   └───x.txt
 │   │   └───y.txt
 ```
-*after command `make gpu_test`*  
+*after command `.\gpu_test.bat -a`*  
 
 ```shell
 ├───tasks
@@ -164,7 +164,7 @@ You can use my python scripts which calculate alignment automatically in a speci
 │   │       └───alm
 │   │           └───...
 ```
-> The folder `alm/` contains alignments `<alignment.txt>` generated from `alignment.exe` 
+> The folder `alm/` contains alignments `<alignment.txt>` generated from `alignment.exe`, if you don't want to genearate this, remove argv `-a` 
 
 > The file `best.txt` is the file which stores the best intervals generated from `semi_interval.exe`
 ### Commands
@@ -223,8 +223,8 @@ make clean_tasks
 
 ## Requirements
 * MSVC `19.29.30143 for x64`
-* CUDA `11.4`
-* NVIDIA-SMI `471.41`
+* CUDA `11.6`
+* NVIDIA-SMI `511.65`
 * Operating System `Windows 11`
 * Make `GNU Make 4.3`
 * Python `3.10.4`
