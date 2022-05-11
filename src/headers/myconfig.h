@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef MY_CONFIG_H
+#define MY_CONFIG_H
 
 //GPU calculation
 #define THREAD_SIZE 128 //thread size (>=1,<=1024)

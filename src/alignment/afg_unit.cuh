@@ -3,7 +3,7 @@
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
 
-#include "config.h"
+#include "myconfig.h"
 #include "comm.cuh"
 #include "score.cuh"
 

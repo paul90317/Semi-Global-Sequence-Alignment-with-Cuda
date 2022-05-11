@@ -1,7 +1,7 @@
 //2D DP 陣列的單元
 #ifndef AFG_UNIT_H
 #define AFG_UNIT_H
-#include "config.h"
+#include "myconfig.h"
 #include "score.cuh"
 #include "comm.cuh"
 

@@ -2,7 +2,7 @@
 #define ALM_CONTROLLER_H
 
 #include "alm_unit.cuh"
-#include "config.h"
+#include "myconfig.h"
 #include "func.cuh"
 #include "sequence.cuh"
 

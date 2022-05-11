@@ -2,7 +2,7 @@
 #define AFG_CONTROLER_H
 
 #include "afg_unit.cuh"
-#include "config.h"
+#include "myconfig.h"
 #include "func.cuh"
 #include "comm.cuh"
 #include "sequence.cuh"
