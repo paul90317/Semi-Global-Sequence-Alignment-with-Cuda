@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include "myconfig.h"
 #include "sequence.cuh"
 #include "alm_controller/alm_controller.cuh"
 #include "afg_controller.cuh"

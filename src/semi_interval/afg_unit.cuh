@@ -103,10 +103,16 @@ public:
         return max3(m,x,y)+score::match(_x,_y);
     }
     __device__ res_unit to_x(){// y have gap, mean x move
-        return max3(m+score::g_device,x+score::e_device,y+score::g_device);
+        res_unit a=m+score::g_device;
+        res_unit b=x+score::e_device;
+        res_unit c=y+score::g_device;
+        return max3(a,b,c);
     }
     __device__ res_unit to_y(){// x have gap, mean y move
-        return max3(m+score::g_device,x+score::g_device,y+score::e_device);
+        res_unit a=m+score::g_device;
+        res_unit b=x+score::g_device;
+        res_unit c=y+score::e_device;
+        return max3(a,b,c);
     }
 
     __all__ res_unit& result(){

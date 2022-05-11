@@ -3,7 +3,7 @@
 
 #include "alm_unit.cuh"
 #include "myconfig.h"
-#include "func.cuh"
+#include "../func.cuh"
 #include "sequence.cuh"
 
 __all__

@@ -29,6 +29,6 @@ typedef double datatype;//The data type of the score matrix, recommended double 
 #define FLOAT_PRECISION 5 //how many precision of best score should be outputed. (semi_interval.exe)
 
 //alignment.exe return point.
-#define ALM_END_POINT_SIZE 60000ui64 //how small the sub sequence does DFS call 2D alignment.
+#define ALM_END_POINT_SIZE ((long long unsigned int)60000) //how small the sub sequence does DFS call 2D alignment.
 
 #endif
