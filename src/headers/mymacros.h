@@ -1,5 +1,5 @@
-#ifndef TYPE_H
-#define TYPE_H
+#ifndef MY_MACRO_H
+#define MY_MACRO_H
 #include <fstream>
 #include <stack>
 #include <cstdio>

@@ -5,7 +5,7 @@ However, I don't do this by one program but two.
 1. The program [`semi_interval`](./src/semi_interval/main.cu), will calculate best score with semi x and y first, then generate semi inteval of x and y.  
 2. The program [`alignment`](./src/semi_interval/main.cu), will align the sequence x,y with the interval, although this is global align, but we use semi interval to do this, so result will as same as semi global sequence alignment.  
 ## Config
-You can edit config in [`config.h`](./src/headers/config.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
+You can edit config in [`myconfig.h`](./src/headers/myconfig.h), this config is a part of program, so it will be optimized (*"optimized"* is my word, not *"compiler optimizing"*) with preprocessor , such as branch reducing, class member reducing, etc.  
 In this file, you can edit cuda thread number per block, start and end of sequence x and y is free or fixed the datatype of score matrix and so on.
 
 ## Compile and Run   
@@ -23,7 +23,7 @@ make clean
 ```shell
 semi_interval.exe <x.txt> <y.txt> <best interval.txt> <score.txt>
 ```
-> Get the best interval, you need to config semi setting and datatype of score matrix in [`config.h`](src/headers/config.h).  
+> Get the best interval, you need to config semi setting and datatype of score matrix in [`myconfig.h`](src/headers/myconfig.h).  
 
 * `<x.txt>` `<y.txt>` the files need to contain input sequence.  
 * `<best interval.txt>` best intervals store in this file.

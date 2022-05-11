@@ -1,9 +1,9 @@
 #ifndef COMM_H
 #define COMM_H
 
-#include "config.h"
+#include "myconfig.h"
 #include "test_time.h"
-#include "type.h"
+#include "mymacros.h"
 #include "score.cuh"
 
 #include <cstring>

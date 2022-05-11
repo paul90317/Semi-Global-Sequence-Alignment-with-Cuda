@@ -1,7 +1,7 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-#include "type.h"
+#include "mymacros.h"
 
 namespace score{
     char* Char_map;
