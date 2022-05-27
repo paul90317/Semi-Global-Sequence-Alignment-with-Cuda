@@ -1,6 +1,11 @@
 import json
 import os
 from sys import argv
+import subprocess
+
+def command_call(command:str):
+    result=subprocess.getoutput(command)
+    print(result)
 
 def mkdir(dir):
     if not os.path.isdir(dir):

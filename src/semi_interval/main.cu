@@ -55,7 +55,7 @@ __global__ void calculate(afg_unit* M,afg_unit* M1,afg_unit* M2,sequence x,seque
     }
 #endif
 }
-
+#define free_or_fixed(free) (free?"free":"fixed")
 int main(int argc,char** argv){
     std::cout<<std::fixed<<std::setprecision(FLOAT_PRECISION)<<"\n";
     if(argc!=5){
@@ -64,7 +64,9 @@ int main(int argc,char** argv){
     }
     afg_unit *GM,*GM1,*GM2;
 
-    //common
+    std::cout<<"semi-global-setting: src/headers/myconfig.h\n";
+    std::cout<<" - x: ["<<free_or_fixed(X_FREE_START)<<", "<<free_or_fixed(X_FREE_END)<<"]\n";
+    std::cout<<" - y: ["<<free_or_fixed(Y_FREE_START)<<", "<<free_or_fixed(Y_FREE_END)<<"]\n";
     if(!score::load(argv[4])){
         std::cout<<"error: can't load score matrix in "<<argv[4]<<"\n";
         exit(0);

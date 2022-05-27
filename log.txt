@@ -1,0 +1,223 @@
+Transfrom score.json to temp/score.txt.
+-----------100K-100K------------
+./semi_interval.out "tasks/100K-100K/x.txt" "tasks/100K-100K/y.txt" "tasks/100K-100K/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/100K-100K/x.txt
+ - size: 98067
+sequence Y: tasks/100K-100K/y.txt
+ - size: 99326
+
+time taken: 4.07s
+
+[OUTPUT]
+best intervals: tasks/100K-100K/out/best.txt
+best score: -26379.70000
+inteval: X=[1, 98067] Y=[1, 99326]
+ - score: -26379.70000
+---------------------------
+./alignment.out "tasks/100K-100K/x.txt" "tasks/100K-100K/y.txt" temp/best.txt temp/score.txt "tasks/100K-100K/out/alm/-26379.70000-1-98067-1-99326.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -26379.7
+ - sequence X: tasks/100K-100K/x.txt
+ -  - interval: [1, 98067]
+ - sequence Y: tasks/100K-100K/y.txt
+ -  - interval: [1, 99326]
+
+time taken: 20.42s
+
+[OUTPUT]
+best score: -26379.7
+alignment: tasks/100K-100K/out/alm/-26379.70000-1-98067-1-99326.txt
+ - score: -26379.7
+-----------100K-10K------------
+./semi_interval.out "tasks/100K-10K/x.txt" "tasks/100K-10K/y.txt" "tasks/100K-10K/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/100K-10K/x.txt
+ - size: 98067
+sequence Y: tasks/100K-10K/y.txt
+ - size: 10150
+
+time taken: 1.87s
+
+[OUTPUT]
+best intervals: tasks/100K-10K/out/best.txt
+best score: -149507.60000
+inteval: X=[1, 98067] Y=[1, 10150]
+ - score: -149507.60000
+---------------------------
+./alignment.out "tasks/100K-10K/x.txt" "tasks/100K-10K/y.txt" temp/best.txt temp/score.txt "tasks/100K-10K/out/alm/-149507.60000-1-98067-1-10150.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -149508
+ - sequence X: tasks/100K-10K/x.txt
+ -  - interval: [1, 98067]
+ - sequence Y: tasks/100K-10K/y.txt
+ -  - interval: [1, 10150]
+
+time taken: 7.22s
+
+[OUTPUT]
+best score: -149508
+alignment: tasks/100K-10K/out/alm/-149507.60000-1-98067-1-10150.txt
+ - score: -149508
+-----------small------------
+./semi_interval.out "tasks/small/x.txt" "tasks/small/y.txt" "tasks/small/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/small/x.txt
+ - size: 20
+sequence Y: tasks/small/y.txt
+ - size: 15
+
+time taken: 0.00s
+
+[OUTPUT]
+best intervals: tasks/small/out/best.txt
+best score: -14.00000
+inteval: X=[1, 20] Y=[1, 15]
+ - score: -14.00000
+---------------------------
+./alignment.out "tasks/small/x.txt" "tasks/small/y.txt" temp/best.txt temp/score.txt "tasks/small/out/alm/-14.00000-1-20-1-15.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -14
+ - sequence X: tasks/small/x.txt
+ -  - interval: [1, 20]
+ - sequence Y: tasks/small/y.txt
+ -  - interval: [1, 15]
+
+time taken: 1.20s
+
+[OUTPUT]
+best score: -14
+alignment: tasks/small/out/alm/-14.00000-1-20-1-15.txt
+ - score: -14
+-----------1K-1K------------
+./semi_interval.out "tasks/1K-1K/x.txt" "tasks/1K-1K/y.txt" "tasks/1K-1K/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/1K-1K/x.txt
+ - size: 972
+sequence Y: tasks/1K-1K/y.txt
+ - size: 979
+
+time taken: 0.01s
+
+[OUTPUT]
+best intervals: tasks/1K-1K/out/best.txt
+best score: -281.20000
+inteval: X=[1, 972] Y=[1, 979]
+ - score: -281.20000
+---------------------------
+./alignment.out "tasks/1K-1K/x.txt" "tasks/1K-1K/y.txt" temp/best.txt temp/score.txt "tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -281.2
+ - sequence X: tasks/1K-1K/x.txt
+ -  - interval: [1, 972]
+ - sequence Y: tasks/1K-1K/y.txt
+ -  - interval: [1, 979]
+
+time taken: 1.22s
+
+[OUTPUT]
+best score: -281.2
+alignment: tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt
+ - score: -281.2
+-----------10K-100K------------
+./semi_interval.out "tasks/10K-100K/x.txt" "tasks/10K-100K/y.txt" "tasks/10K-100K/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/10K-100K/x.txt
+ - size: 9747
+sequence Y: tasks/10K-100K/y.txt
+ - size: 99326
+
+time taken: 0.68s
+
+[OUTPUT]
+best intervals: tasks/10K-100K/out/best.txt
+best score: -152856.20000
+inteval: X=[1, 9747] Y=[1, 99326]
+ - score: -152856.20000
+---------------------------
+./alignment.out "tasks/10K-100K/x.txt" "tasks/10K-100K/y.txt" temp/best.txt temp/score.txt "tasks/10K-100K/out/alm/-152856.20000-1-9747-1-99326.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -152856
+ - sequence X: tasks/10K-100K/x.txt
+ -  - interval: [1, 9747]
+ - sequence Y: tasks/10K-100K/y.txt
+ -  - interval: [1, 99326]
+
+time taken: 3.85s
+
+[OUTPUT]
+best score: -152856
+alignment: tasks/10K-100K/out/alm/-152856.20000-1-9747-1-99326.txt
+ - score: -152856
+-----------10K-10K------------
+./semi_interval.out "tasks/10K-10K/x.txt" "tasks/10K-10K/y.txt" "tasks/10K-10K/out/best.txt" temp/score.txt
+
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/10K-10K/x.txt
+ - size: 9747
+sequence Y: tasks/10K-10K/y.txt
+ - size: 10150
+
+time taken: 0.12s
+
+[OUTPUT]
+best intervals: tasks/10K-10K/out/best.txt
+best score: -2705.20000
+inteval: X=[1, 9747] Y=[1, 10150]
+ - score: -2705.20000
+---------------------------
+./alignment.out "tasks/10K-10K/x.txt" "tasks/10K-10K/y.txt" temp/best.txt temp/score.txt "tasks/10K-10K/out/alm/-2705.20000-1-9747-1-10150.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -2705.2
+ - sequence X: tasks/10K-10K/x.txt
+ -  - interval: [1, 9747]
+ - sequence Y: tasks/10K-10K/y.txt
+ -  - interval: [1, 10150]
+
+time taken: 1.33s
+
+[OUTPUT]
+best score: -2705.2
+alignment: tasks/10K-10K/out/alm/-2705.20000-1-9747-1-10150.txt
+ - score: -2705.2

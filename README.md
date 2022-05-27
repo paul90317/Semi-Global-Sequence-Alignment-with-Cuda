@@ -230,16 +230,85 @@ make clean_tasks
 * Python3 `3.8.10`
 
 ## Result  
-#### `semi_interval.out`  
+### semi_interval.out
+run following command to get `score.txt`  
 ```shell
-
+$ ./matrix_transform.sh score.json temp/score.txt 
+Transfrom score.json to temp/score.txt.
 ```
-#### `cpu.out`
+and run following command.
 ```shell
+$ ./semi_interval.out "tasks/1K-1K/x.txt" "tasks/1K-1K/y.txt" "tasks/1K-1K/out/best.txt" temp/score.txt
 
+semi-global-setting: src/headers/myconfig.h
+ - x: [fixed, fixed]
+ - y: [fixed, fixed]
+score matrix: temp/score.txt
+sequence X: tasks/1K-1K/x.txt
+ - size: 972
+sequence Y: tasks/1K-1K/y.txt
+ - size: 979
+
+time taken: 0.01s
+
+[OUTPUT]
+best intervals: tasks/1K-1K/out/best.txt
+best score: -281.20000
+inteval: X=[1, 972] Y=[1, 979]
+ - score: -281.20000
 ```
-#### `alignment.out`
+### cpu.out
 ```shell
+$ ./cpu.out "tasks/1K-1K/x.txt" "tasks/1K-1K/y.txt" temp/score.txt
 
+score matrix: temp/score.txt
+sequence X: tasks/1K-1K/x.txt
+ - size: 972
+sequence Y: tasks/1K-1K/y.txt
+ - size: 979
+
+time taken: 0.02s
+
+[OUTPUT]
+best score: -281.2
 ```
-## Performance  
+### alignment.out
+run the python script `gpu_test`,
+```shell
+$ ./gpu_test.sh -a
+```
+and you will find it run following command.
+
+```shell
+$ ./alignment.out "tasks/1K-1K/x.txt" "tasks/1K-1K/y.txt" temp/best.txt temp/score.txt "tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt"
+
+score matrix: temp/score.txt
+interval: temp/best.txt
+ - index: 0
+ - score: -281.2
+ - sequence X: tasks/1K-1K/x.txt
+ -  - interval: [1, 972]
+ - sequence Y: tasks/1K-1K/y.txt
+ -  - interval: [1, 979]
+
+time taken: 1.22s
+
+[OUTPUT]
+best score: -281.2
+alignment: tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt
+ - score: -281.2
+```
+and the result alignment is stored in `"tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt"`, run following command to show it.
+```shell
+$ ./v2h.sh tasks/1K-1K/out/alm/-281.20000-1-972-1-979.txt
+ATGCTAAAAACCCTCAATAAACTAGGTACTGATGGAACATATCTCAAAAT
+--G---ACATCCAT---T----TTTGTTGTTATCCAACATCTGCCCACCG
+
+AATAATACCTATTTATGAAAAACCCACAGCCAATACTGAATGGTGAAAAA
+A-TATT-CCTTTTGAAGACTA-CCC-CATT-AATCTTGA-GAGTGG----
+
+CTGGAAGCATTCCCTTTGAAAACCAGCACAAG--ACAAGGATGCCCTATC
+CTGGTA-C--TCCCTCT-AAGAC-ATCGAAAGGGACTAGCTTTCCAAA-C
+
+...
+```

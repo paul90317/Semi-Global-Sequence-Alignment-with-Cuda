@@ -6,6 +6,10 @@
 #include "../func.cuh"
 #include "sequence.cuh"
 
+/*__all__
+inline long long unsigned int dimcf(long long unsigned int i,long long unsigned int j,long long unsigned int hsize=2*ALM_END_POINT_SIZE+1){
+    return i*hsize+j+i;
+}*/
 __all__
 inline long long unsigned int dimcf(long long unsigned int i,long long unsigned int j,long long unsigned int hsize=ALM_END_POINT_SIZE+1){
     return i*hsize+j;
@@ -68,6 +72,7 @@ public:
         cudaMalloc(&GM1, (end_size+2)*sizeof(alm_unit));
         cudaMalloc(&GM2, (end_size+2)*sizeof(alm_unit));
         matrix_size=(end_size+1)*(end_size+1);
+        //matrix_size=(end_size+1)*(2*end_size+1);
         cudaMalloc(&gtrace_back,matrix_size*sizeof(trace_unit));
         ctrace_back=(trace_unit*)malloc(matrix_size*sizeof(trace_unit));
         GM++;
