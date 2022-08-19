@@ -1,4 +1,7 @@
 # Semi Global Sequence Alignment with Cuda  
+[intro](https://www.csie.ncku.edu.tw/csie-project-2022/asset/intro/6-5.pdf)  
+[ppt](https://www.csie.ncku.edu.tw/csie-project-2022/asset/ppt/6-5.pdf)  
+[youtube](https://youtu.be/G-z3TtlxK7I)  
 ## What I have done
 As the topic, I alse implement the local and global sequence alignment.  
 However, I don't do this by one program but two.  
